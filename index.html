@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoodLine | 數據分析</title>
+    <title>LINE 聊天分析</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,9 +20,9 @@
     <script defer src="src/analyze_premium.js"></script>
 
     <!-- SEO & Social Sharing -->
-    <meta name="description" content="MoodLine Pro | 專業級 LINE 對話紀錄分析工具，深度剖析回覆速度、話量比例、通話行為與情感標籤。100% 隱私保護。">
-    <meta property="og:title" content="MoodLine Pro - 專業 LINE 對話解析儀">
-    <meta property="og:description" content="由數據挖掘對話背後的真相。深度分析回覆速度、話題主動性、情感投入度，生成個人專屬性格標籤。">
+    <meta name="description" content="LINE 聊天分析">
+    <meta property="og:title" content="LINE 聊天分析">
+    <meta property="og:description" content="LINE 聊天分析">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://moodline.zeabur.app/">
     <meta name="twitter:card" content="summary_large_image">
@@ -36,27 +36,27 @@
     <div class="container">
         <!-- Header -->
         <header class="app-header">
-            <h1 class="main-title">MoodLine <span>Pro</span></h1>
+            <h1 class="main-title">LINE 聊天分析</h1>
 
             <!-- Developer Profile Badge -->
-            <a href="https://github.com/hanson0321/MoodLine" target="_blank" class="dev-badge"
+            <a href="https://www.linkedin.com/in/yu-heng-huang-854983312/" target="_blank" class="dev-badge"
                 style="text-decoration: none;">
                 <img src="img/yuheng.png" alt="yuheng" class="dev-avatar">
                 <div class="dev-info">
                     <span class="dev-label">AI Engineer</span>
                     <span class="dev-name">Yu Heng</span>
-                    <span class="dev-github-link">View GitHub</span>
+                    <span class="dev-github-link">LinkedIn</span>
                 </div>
             </a>
 
             <p class="sub-title">深度解析對話紀錄 探索情感流動的數據真相</p>
         </header>
 
-        <div class="upload-card" style="margin-bottom: 32px;">
+        <div class="upload-card">
             <label for="fileInput" class="upload-btn">
-                選擇 LINE 聊天紀錄 (.txt)
+                上傳 LINE 聊天 (.txt)
             </label>
-            <input type="file" id="fileInput" class="hidden" accept=".txt">
+            <input type="file" id="fileInput" style="display: none;" accept=".txt">
             <p style="margin-top: 20px; color: var(--text-muted); font-size: 0.875rem;">
                 所有運算皆於本機執行，您的對話紀錄絕不上傳。
             </p>
@@ -85,33 +85,33 @@
                 </div>
             </div>
         </div>
-        </header>
+    </div>
 
-        <div id="loading" class="hidden" style="text-align: center; margin-top: 80px;">
-            <div class="loader-eye">數據分析中</div>
-            <h2 style="font-weight: 800; margin-bottom: 8px; font-size: 1.5rem;">正在提取對話特徵</h2>
-            <p style="color: var(--text-muted);">分析關鍵詞、通話數據與回覆行為</p>
+    <div id="loading" class="hidden" style="text-align: center; margin-top: 80px;">
+        <div class="loader-eye">數據分析中</div>
+        <h2 style="font-weight: 800; margin-bottom: 8px; font-size: 1.5rem;">正在提取對話特徵</h2>
+        <p style="color: var(--text-muted);">分析關鍵詞、通話數據與回覆行為</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error" class="hidden"
+        style="text-align: center; padding: 24px; color: #ef4444; background: rgba(239, 68, 68, 0.1); border-radius: 16px; margin-bottom: 32px; border: 1px solid rgba(239, 68, 68, 0.2);">
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="hidden">
+        <div id="dashboard-content">
+            <!-- Data will be injected here -->
         </div>
 
-        <!-- Error State -->
-        <div id="error" class="hidden"
-            style="text-align: center; padding: 24px; color: #ef4444; background: rgba(239, 68, 68, 0.1); border-radius: 16px; margin-bottom: 32px; border: 1px solid rgba(239, 68, 68, 0.2);">
-        </div>
-
-        <!-- Dashboard -->
-        <div id="dashboard" class="hidden">
-            <div id="dashboard-content">
-                <!-- Data will be injected here -->
-            </div>
-
-            <!-- Footer -->
-            <footer class="app-footer">
-                <p>Designed & Engineered by <b style="color: var(--text-main)">Yu Heng</b></p>
-                <p style="margin-top: 8px; opacity: 0.5; font-size: 0.75rem;">
-                    &copy; 2026 MoodLine Analysis. All Rights Reserved.
-                </p>
-            </footer>
-        </div>
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Designed & Engineered by <b style="color: var(--text-main)">Yu Heng</b></p>
+            <p style="margin-top: 8px; opacity: 0.5; font-size: 0.75rem;">
+                &copy; 2026 MoodLine Analysis. All Rights Reserved.
+            </p>
+        </footer>
+    </div>
     </div>
 
 </body>

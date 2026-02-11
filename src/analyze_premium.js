@@ -27,6 +27,9 @@ function handleFileUpload(event) {
                 throw new Error("No messages found or invalid format.");
             }
             const analysis = analyzeChat(chatData);
+            if (!analysis) {
+                throw new Error("無法分析數據：請確認檔案中有至少兩位參與者的對話。");
+            }
             renderDashboard(analysis);
 
             loadingDiv.classList.add('hidden');
@@ -34,9 +37,9 @@ function handleFileUpload(event) {
             const tutorial = document.getElementById('tutorialSection');
             if (tutorial) tutorial.classList.add('hidden');
         } catch (err) {
-            console.error(err);
+            console.error("Analysis Error:", err);
             loadingDiv.classList.add('hidden');
-            errorDiv.textContent = "解析失敗：請確認檔案格式是否為 LINE 文字檔。(" + err.message + ")";
+            errorDiv.innerHTML = `<strong>解析失敗</strong><br>細節：${err.message}<br><small>請確認檔案格式是否正確（LINE > 設定 > 傳送聊天紀錄）</small>`;
             errorDiv.classList.remove('hidden');
         }
     };
@@ -477,11 +480,11 @@ function renderDashboard(data) {
             <h2 class="section-title">對話關鍵字</h2>
             <div class="section-line"></div>
         </div>
-        <div class="card-premium" style="margin-bottom:32px; min-height:300px; position:relative;">
-            <div id="wordFreqIndicator" style="position:absolute; top:12px; right:20px; font-size:0.8rem; color:var(--primary); font-weight:800; opacity:0; transition:opacity 0.3s;">
-                點擊單字查看頻率
+        <div class="card-premium" style="margin-bottom:32px; position:relative; padding-top: 60px;">
+            <div id="wordFreqIndicator" style="position:absolute; top:20px; left:20px; right:20px; font-size:0.9rem; color:var(--text-muted); font-weight:700; background:rgba(255,255,255,0.05); padding:8px 16px; border-radius:8px; text-align:center; transition:all 0.3s;">
+                點擊下方單字查看出現頻率
             </div>
-            <div id="wordCloudContainer" style="display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:10px; padding:20px;">
+            <div id="wordCloudContainer" style="display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px; padding:10px; min-height:200px; max-height:400px; overflow-y:auto;">
                 <!-- Word cloud will be rendered here -->
             </div>
         </div>
@@ -903,7 +906,7 @@ function renderWordCloud(stats) {
         }
     });
 
-    const sortedWords = Object.entries(allFreq).sort((a, b) => b[1] - a[1]).slice(0, 50);
+    const sortedWords = Object.entries(allFreq).sort((a, b) => b[1] - a[1]).slice(0, 10);
     const maxFreq = sortedWords[0] ? sortedWords[0][1] : 1;
 
     container.innerHTML = sortedWords.map(([word, freq]) => {
@@ -933,7 +936,10 @@ function renderWordCloud(stats) {
     }).join('');
 
     const indicator = document.getElementById('wordFreqIndicator');
-    if (indicator) indicator.style.opacity = '0.6';
+    if (indicator) {
+        indicator.style.opacity = '1';
+        indicator.style.background = 'rgba(255,255,255,0.05)';
+    }
 }
 
 window.updateFreqIndicator = function (word, total, personDataStr) {
@@ -941,15 +947,21 @@ window.updateFreqIndicator = function (word, total, personDataStr) {
     if (indicator) {
         const personData = JSON.parse(personDataStr);
         const breakdown = Object.entries(personData)
-            .map(([name, count]) => `${name} 講了 ${count} 次`)
-            .join('，');
+            .map(([name, count]) => `${name} ${count}次`)
+            .join(' | ');
 
-        indicator.innerHTML = `關鍵字「${word}」總計 ${total} 次 | ${breakdown}`;
-        indicator.style.opacity = '1';
-        indicator.style.color = 'var(--primary)';
+        indicator.innerHTML = `<span style="color:var(--primary)">${word}</span>: 共 ${total}次 (${breakdown})`;
+        indicator.style.background = 'rgba(0, 210, 255, 0.15)';
+        indicator.style.borderColor = 'var(--primary)';
+        indicator.style.color = '#fff';
+
+        // Mobile UX: Scroll to top of card if indicator might be off-screen
+        if (window.innerWidth < 768) {
+            indicator.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
         setTimeout(() => {
-            indicator.style.color = 'var(--text-secondary)';
-            indicator.style.opacity = '0.6';
+            indicator.style.background = 'rgba(255,255,255,0.05)';
+            indicator.style.borderColor = 'transparent';
         }, 5000);
     }
 };
