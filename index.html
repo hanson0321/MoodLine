@@ -19,8 +19,13 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script defer src="src/analyze_premium.js"></script>
 
-    <!-- SEO -->
-    <meta name="description" content="MoodLine | 暈船分析工具 剖析回覆速度、話題主動性、通話量及暈船指數">
+    <!-- SEO & Social Sharing -->
+    <meta name="description" content="MoodLine Pro | 專業級 LINE 對話紀錄分析工具，深度剖析回覆速度、話量比例、通話行為與情感標籤。100% 隱私保護。">
+    <meta property="og:title" content="MoodLine Pro - 專業 LINE 對話解析儀">
+    <meta property="og:description" content="由數據挖掘對話背後的真相。深度分析回覆速度、話題主動性、情感投入度，生成個人專屬性格標籤。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://moodline.zeabur.app/">
+    <meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body>
@@ -29,56 +34,57 @@
     <div class="ambient-glow pink"></div>
 
     <div class="container">
-        <!-- Developer Profile Badge -->
-        <a href="https://github.com/hanson0321/MoodLine" target="_blank" class="dev-badge"
-            style="text-decoration: none;">
-            <img src="img/yuheng.png" alt="yuheng" class="dev-avatar">
-            <div class="dev-info">
-                <span class="dev-label">AI Engineer</span>
-                <span class="dev-name">Yu Heng</span>
-                <span style="font-size: 0.65rem; color: var(--primary); opacity: 0.8; margin-top: 4px;">View
-                    GitHub</span>
-            </div>
-        </a>
-
         <!-- Header -->
         <header class="app-header">
             <h1 class="main-title">MoodLine <span>Pro</span></h1>
+
+            <!-- Developer Profile Badge -->
+            <a href="https://github.com/hanson0321/MoodLine" target="_blank" class="dev-badge"
+                style="text-decoration: none;">
+                <img src="img/yuheng.png" alt="yuheng" class="dev-avatar">
+                <div class="dev-info">
+                    <span class="dev-label">AI Engineer</span>
+                    <span class="dev-name">Yu Heng</span>
+                    <span class="dev-github-link">View GitHub</span>
+                </div>
+            </a>
+
             <p class="sub-title">深度解析對話紀錄 探索情感流動的數據真相</p>
+        </header>
 
-            <div class="upload-card" style="margin-bottom: 32px;">
-                <label for="fileInput" class="upload-btn">
-                    選擇 LINE 聊天紀錄 (.txt)
-                </label>
-                <input type="file" id="fileInput" class="hidden" accept=".txt">
-                <p style="margin-top: 20px; color: var(--text-muted); font-size: 0.875rem;">
-                    所有運算皆於本機執行，您的對話紀錄絕不上傳。
-                </p>
-            </div>
+        <div class="upload-card" style="margin-bottom: 32px;">
+            <label for="fileInput" class="upload-btn">
+                選擇 LINE 聊天紀錄 (.txt)
+            </label>
+            <input type="file" id="fileInput" class="hidden" accept=".txt">
+            <p style="margin-top: 20px; color: var(--text-muted); font-size: 0.875rem;">
+                所有運算皆於本機執行，您的對話紀錄絕不上傳。
+            </p>
+        </div>
 
-            <div id="tutorialSection" class="tutorial-card card-premium"
-                style="margin-bottom: 60px; text-align: left; padding: 24px;">
-                <h3 style="margin-bottom: 16px; color: var(--primary); font-size: 1.1rem;">如何獲取聊天紀錄txt？</h3>
-                <div
-                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; font-size: 0.875rem; color: var(--text-secondary);">
-                    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
-                        <div style="color: var(--primary); font-weight: 800; margin-bottom: 4px;">第一步</div>
-                        進入對話區
-                    </div>
-                    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
-                        <div style="color: var(--primary); font-weight: 800; margin-bottom: 4px;">第二步</div>
-                        點選右上角選單 三 並進入「設定」
-                    </div>
-                    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
-                        <div style="color: var(--primary); font-weight: 800; margin-bottom: 4px;">第三步</div>
-                        選擇「傳送聊天紀錄」並存成 .txt 檔
-                    </div>
-                    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
-                        <div style="color: var(--primary); font-weight: 800; margin-bottom: 4px;">第四步</div>
-                        將檔案上傳至下方分析區即可
-                    </div>
+        <div id="tutorialSection" class="tutorial-card card-premium"
+            style="margin-bottom: 60px; text-align: left; padding: 24px;">
+            <h3 style="margin-bottom: 16px; color: var(--primary); font-size: 1.1rem;">如何獲取聊天紀錄txt？</h3>
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; font-size: 0.875rem; color: var(--text-secondary);">
+                <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
+                    <div style="color: var(--primary); font-weight: 800; margin-bottom: 4px;">第一步</div>
+                    進入對話區
+                </div>
+                <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
+                    <div style="color: var(--primary); font-weight: 800; margin-bottom: 4px;">第二步</div>
+                    點選右上角選單 三 並進入「設定」
+                </div>
+                <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
+                    <div style="color: var(--primary); font-weight: 800; margin-bottom: 4px;">第三步</div>
+                    選擇「傳送聊天紀錄」並存成 .txt 檔
+                </div>
+                <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
+                    <div style="color: var(--primary); font-weight: 800; margin-bottom: 4px;">第四步</div>
+                    將檔案上傳至下方分析區即可
                 </div>
             </div>
+        </div>
         </header>
 
         <div id="loading" class="hidden" style="text-align: center; margin-top: 80px;">
