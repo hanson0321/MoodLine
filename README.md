@@ -26,7 +26,3 @@
 ## 開發資訊
 
 - Project Lead: yuheng
-- Core Engine: Antigravity Logic
-- Theme: Harmonious Aurora (Aurora Sky / Amethyst)
-
-Designed with passion by yuheng.
