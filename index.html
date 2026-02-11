@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoodLine | 數據通靈分析儀</title>
+    <title>MoodLine | 數據分析</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,38 +24,66 @@
 </head>
 
 <body>
+    <!-- Ambient Background Effects -->
+    <div class="ambient-glow"></div>
+    <div class="ambient-glow pink"></div>
 
     <div class="container">
         <!-- Developer Profile Badge -->
-        <div class="dev-badge">
+        <a href="https://github.com/yuheng" target="_blank" class="dev-badge" style="text-decoration: none;">
             <img src="img/yuheng.png" alt="yuheng" class="dev-avatar">
             <div class="dev-info">
                 <span class="dev-label">AI Engineer</span>
                 <span class="dev-name">Yu Heng</span>
+                <span style="font-size: 0.65rem; color: var(--primary); opacity: 0.8; margin-top: 4px;">View
+                    GitHub</span>
             </div>
-        </div>
+        </a>
 
         <!-- Header -->
         <header class="app-header">
-            <h1 class="main-title">MoodLine <span style="color: var(--primary)">Premium</span></h1>
-            <p class="sub-title">深度解析對話紀錄，探索情感流動的數據真相。專業、精準、洞察人心。</p>
+            <h1 class="main-title">MoodLine <span>Pro</span></h1>
+            <p class="sub-title">深度解析對話紀錄 探索情感流動的數據真相</p>
 
-            <div class="upload-card">
+            <div class="upload-card" style="margin-bottom: 32px;">
                 <label for="fileInput" class="upload-btn">
-                    </span> 選擇 LINE 聊天紀錄 (.txt)
+                    選擇 LINE 聊天紀錄 (.txt)
                 </label>
                 <input type="file" id="fileInput" class="hidden" accept=".txt">
-                <p style="margin-top: 16px; color: var(--text-muted); font-size: 0.875rem;">
-                    支援 iOS / Android / Desktop
+                <p style="margin-top: 20px; color: var(--text-muted); font-size: 0.875rem;">
+                    所有運算皆於本機執行，您的對話紀錄絕不上傳。
                 </p>
+            </div>
+
+            <div id="tutorialSection" class="tutorial-card card-premium"
+                style="margin-bottom: 60px; text-align: left; padding: 24px;">
+                <h3 style="margin-bottom: 16px; color: var(--primary); font-size: 1.1rem;">如何獲取聊天紀錄txt？</h3>
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; font-size: 0.875rem; color: var(--text-secondary);">
+                    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
+                        <div style="color: var(--primary); font-weight: 800; margin-bottom: 4px;">第一步</div>
+                        進入對話區
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
+                        <div style="color: var(--primary); font-weight: 800; margin-bottom: 4px;">第二步</div>
+                        點選右上角選單 三 並進入「設定」
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
+                        <div style="color: var(--primary); font-weight: 800; margin-bottom: 4px;">第三步</div>
+                        選擇「傳送聊天紀錄」並存成 .txt 檔
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
+                        <div style="color: var(--primary); font-weight: 800; margin-bottom: 4px;">第四步</div>
+                        將檔案上傳至下方分析區即可
+                    </div>
+                </div>
             </div>
         </header>
 
-        <!-- Loading State -->
-        <div id="loading" class="hidden" style="text-align: center;">
-            <div class="loader-eye">🔮</div>
-            <h2 style="font-weight: 800; margin-bottom: 8px;">數據提取中...</h2>
-            <p style="color: var(--text-muted);">正在分析語意、回覆模式與通話數據</p>
+        <div id="loading" class="hidden" style="text-align: center; margin-top: 80px;">
+            <div class="loader-eye">數據分析中</div>
+            <h2 style="font-weight: 800; margin-bottom: 8px; font-size: 1.5rem;">正在提取對話特徵</h2>
+            <p style="color: var(--text-muted);">分析關鍵詞、通話數據與回覆行為</p>
         </div>
 
         <!-- Error State -->
@@ -71,8 +99,10 @@
 
             <!-- Footer -->
             <footer class="app-footer">
-                <p>Created by <b>Yu Heng</b></p>
-                <p style="margin-top: 8px; opacity: 0.5;">所有分析均在瀏覽器本地完成，保護隱私安全。</p>
+                <p>Designed & Engineered by <b style="color: var(--text-main)">Yu Heng</b></p>
+                <p style="margin-top: 8px; opacity: 0.5; font-size: 0.75rem;">
+                    &copy; 2026 MoodLine Analysis. All Rights Reserved.
+                </p>
             </footer>
         </div>
     </div>

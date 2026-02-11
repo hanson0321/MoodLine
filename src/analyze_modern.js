@@ -336,10 +336,10 @@ function analyzeChat(data) {
         s.lovesickScore = Math.round(Math.min(100, baseScore + lateNightBonus));
 
         // Determine Level
-        if (s.lovesickScore <= 30) s.lovesickLevel = "人間清醒 🧊";
-        else if (s.lovesickScore <= 60) s.lovesickLevel = "好感曖昧 🧡";
-        else if (s.lovesickScore <= 85) s.lovesickLevel = "深陷其中 💘";
-        else s.lovesickLevel = "末期暈船 🚑";
+        if (s.lovesickScore <= 30) s.lovesickLevel = "人間清醒 ";
+        else if (s.lovesickScore <= 60) s.lovesickLevel = "好感曖昧 ";
+        else if (s.lovesickScore <= 85) s.lovesickLevel = "深陷其中 ";
+        else s.lovesickLevel = "末期暈船 ";
 
         s.lovesickDesc = getLovesickDesc(s.lovesickScore);
     });
@@ -348,10 +348,10 @@ function analyzeChat(data) {
 }
 
 function getLovesickDesc(score) {
-    if (score <= 30) return "社交客氣，毫無波瀾。回覆慢，字數少，情緒平穩。";
-    if (score <= 60) return "水面下的角力，有點意思。會主動開話題，有來有往。";
-    if (score <= 85) return "訊息秒回，情緒被對方牽著走。投入大量字數與貼圖。";
-    return "自我攻略，沒救了請送醫。極度卑微，充滿討好與等待。";
+    if (score <= 30) return "回覆慢 字數少 沒什麼情緒";
+    if (score <= 60) return "有點意思 會主動開話題 有來有往";
+    if (score <= 85) return "訊息秒回 投入大量字數與貼圖";
+    return "沒救了請送醫 極度卑微 充滿討好與等待";
 }
 
 
