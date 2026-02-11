@@ -1,74 +1,63 @@
-<p align=center>
-    <img src="img/demo1.PNG" width="724.8" height="356.8">
-</p>
+# 🛳️ MoodLine - LINE Lovesick Premium Analyzer
 
-<p align=center>
-    <a target="_blank" href="http://makeapullrequest.com" title="PRs Welcome"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg"></a>
-    <a target="_blank" href="#" title="language count"><img src="https://img.shields.io/github/languages/count/chonyy/line-message-analyzer"></a>
-    <a target="_blank" href="#" title="top language"><img src="https://img.shields.io/github/languages/top/chonyy/line-message-analyzer?color=orange"></a>
-    <a target="_blank" href="https://opensource.org/licenses/MIT" title="License: MIT"><img src="https://img.shields.io/badge/License-MIT-green.svg"></a>
-    <a target="_blank" href="#" title="repo size"><img src="https://img.shields.io/github/repo-size/chonyy/line-message-analyzer"></a>
+這是一個由 **yuheng** 打造的專業級 LINE 對話分析工具。透過深度數據挖掘，分析回覆速度、話題主動性、情感詞彙以及通話紀錄，揭開對話背後的隱藏真相。
 
-</p>
+---
 
-> 📈 Visualizing your LINE message with plots and numbers!
+## 🚀 如何開始使用？
 
-Try it out! https://chonyy.github.io/line-message-analyzer/
+要分析對話紀錄，您需要先從 LINE 匯出對話紀錄文字檔 (.txt) 並上傳至此平台。
 
-For more information and instructions https://www.dcard.tw/f/funny/p/233240764
+### 📥 如何匯出 LINE 聊天紀錄？
 
-## Frequently Asked Question
+#### **iOS 版 (iPhone/iPad)**：
+1. 開啟您想要分析的 **LINE 聊天對話框**。
+2. 點擊右上角的 **「三」 (選單按鈕)**。
+3. 點擊右下角的 **「設定」**。
+4. 選擇 **「傳送聊天紀錄」**。
+5. 將匯出的 `.txt` 檔案儲存到您的裝置中，然後上傳到網頁。
 
-> Q: 這是 LINE 官方的功能嗎? (Is this LINE's official solution?)
+#### **Android 版**：
+1. 開啟您想要分析的 **LINE 聊天對話框**。
+2. 點擊右上角的 **「三」 (選單按鈕)**。
+3. 點擊 **「設定」**。
+4. 選擇 **「匯出聊天紀錄」**。
+5. 將產生的文字檔上傳到網頁即可分析。
 
-A: 不是，這是個人的 Side Project，和 LINE 公司 LY Corporation 沒有任何關係
+---
 
-A: No, this is a personal side project. It has no relation with LINE or LY Corporation
+## 💎 Premium 版本特色
 
-> Q: 聊天紀錄個資外洩?
+- **現代化介面**：採用專業玻璃擬態設計，極簡且富有科技感。
+- **通話通靈**：不僅分析文字，更新增了通話次數、總通話時長與未接來電統計。
+- **深度情緒分析**：掃描關鍵字，分析雙方的情緒價值交換（提供 vs 索取）。
+- **互動走勢圖**：清楚看見雙方的聊天頻率波動。
+- **100% 隱私保護**：所有分析邏輯均在**瀏覽器本地端**完成，您的聊天紀錄絕不會被上傳到伺服器或被第三方存取。
 
-A: 所有的計算都是在使用者的本地端執行，網頁後端並不會留下任何資料，小弟也有附上所有的程式碼了，裡面是沒有任何 server 端的 code ，所以我絕對沒辦法知道使用者上傳了甚麼，可以請你們放心。
+---
 
-如果真的還是不信任但又很想計算的話，可以從下方把程式碼 clone 下來自己 host，一樣是可以計算的，不用網路也可以。小弟這裡只是提供一個平台讓大家方便，不用載下程式碼，開一個網頁就可以計算，若您把程式碼載下來自己算也是完全一樣的。
+## ❓ 常見問題 (Q&A)
 
-> Q:可以分析群組的聊天嗎?
+> **Q: 這是誰開發的？Q&A 是 AI 想的嗎？**
 
-A:群組也可以使用，但是在版面上只會顯示講了最多話的兩個人。若想要完整的群組分析資訊可以使用我寫的[舊版](https://chonyy.github.io/Line-Message-Analyzer-old/)
+**A:** 這個版本是由 **yuheng** 合作開發與優化的進階版本。至於 README 裡的 Q&A，是由 **AI (Antigravity)** 根據專案需求與常見用戶疑問，結合 yuheng 的個人化特色共同整理出來的，目的是讓使用者能更直覺地了解工具功能與安全聲明。
 
-> Q:抓不到貼圖和照片，文字雲裡有我的名子？
+> **Q: 會不會盜取我的個資？**
 
-A:用戶名裡請不要有空格，並且盡量簡短。
+**A:** 絕對不會。這是一個靜態網頁工具，所有的 Javascript 分析都在您的電腦或手機上跑。換句話說，即使您把網路切斷，只要網頁已經載入，它依然可以運作。您的資料只會在您的裝置內流動。
 
-> Q:無法使用或版面很奇怪?
+> **Q: 為什麼有些對話讀不到？**
 
-A:建議複製網址到 Chrome上使用。
+**A:** 請確保您匯出的語言設定為 **「中文 (繁體)」**。目前分析儀對中文格式的支援最為準確。如果檔案內容被手動修改過，可能會導致解析失敗。
 
-> Q:只能用一次，按上一頁後無法使用?
+---
 
-A:請重新整理頁面後即可使用。
+## 🛠️ 開發資訊
 
-> Q:等了十分鐘都跑不出來?
+- **Project Lead**: yuheng
+- **Core Analysis**: Antigravity Logic
+- **UI Design**: Modern Glassmorphism System
 
-A:原則上除非有一百萬則訊息，不然在電腦上最多三分鐘內會跑出來，跑不出來應該是因為 Github page 不太穩定導致當機了，可以等五分鐘後或換一個連結再試試，我跑不出來的朋友等一下下之後再試就馬上跑好了。
+---
 
-> Q:結果很奇怪還出現AM和PM?
-
-A:請將LINE的語言換成中文的再試一次，因為小弟很懶，沒有顧慮到英文版的格式( ಠ ಠ )
-
-> Q:The analyzing result looks weird and AM, PM is appearing on my username?
-
-A: It should work after changing your LINE app to Chinese version. Sad to say, I'm too lazy to build an English version for this. ( ಠ ಠ )
-
-## Responsive Design
-
-**Responsive design** is implemented to make the website available on both desktop and mobile.
-
-<p align=center>
-    <img src="img/demo-mobile.PNG" width="279.6" height="458.4">
-</p>
-
-However, trying out the website on desktop is more recommended.
-
-<p align=center>
-    <img src="img/demo2.PNG" width="724.8" height="356.8">
-</p>
+Designed with ❤️ by yuheng.
