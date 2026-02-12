@@ -183,6 +183,7 @@ function analyzeChat(data) {
             callDuration: 0,
             missedCalls: 0,
             dailyCallDuration: {},
+            dailyCallCount: {},
             wordFrequency: {},
             hourlyFreq: new Array(24).fill(0),
             quickResponses: 0,
@@ -271,6 +272,7 @@ function analyzeChat(data) {
             stats[p].callDuration += durationSec;
             const dateKey = msg.timestamp.toISOString().split('T')[0];
             stats[p].dailyCallDuration[dateKey] = (stats[p].dailyCallDuration[dateKey] || 0) + durationSec;
+            stats[p].dailyCallCount[dateKey] = (stats[p].dailyCallCount[dateKey] || 0) + 1;
         } else if (msg.type === 'missed_call') {
             stats[p].missedCalls++;
         }
@@ -832,41 +834,92 @@ function renderTrendChart(p1, p2, stats) {
 
 function renderCallDetailChart(p1, p2, stats) {
     const ctx = document.getElementById('callChart').getContext('2d');
-    const allDates = Array.from(new Set([...Object.keys(stats[p1].dailyCallDuration), ...Object.keys(stats[p2].dailyCallDuration)])).sort();
+    const allDates = Array.from(new Set([
+        ...Object.keys(stats[p1].dailyCallDuration),
+        ...Object.keys(stats[p2].dailyCallDuration),
+        ...Object.keys(stats[p1].dailyCallCount),
+        ...Object.keys(stats[p2].dailyCallCount)
+    ])).sort();
+
+    const dailyDuration = allDates.map(d => (stats[p1].dailyCallDuration[d] || 0) + (stats[p2].dailyCallDuration[d] || 0));
+    const dailyCounts = allDates.map(d => (stats[p1].dailyCallCount[d] || 0) + (stats[p2].dailyCallCount[d] || 0));
+
     new Chart(ctx, {
-        type: 'bar',
         data: {
             labels: allDates,
             datasets: [
                 {
-                    label: p1,
-                    data: allDates.map(d => stats[p1].dailyCallDuration[d] || 0),
-                    backgroundColor: 'rgba(0, 210, 255, 0.6)',
+                    type: 'bar',
+                    label: '通話時長 (秒)',
+                    data: dailyDuration,
+                    backgroundColor: 'rgba(0, 210, 255, 0.4)',
+                    borderColor: 'rgba(0, 210, 255, 0.8)',
+                    borderWidth: 1,
+                    yAxisID: 'y'
                 },
                 {
-                    label: p2,
-                    data: allDates.map(d => stats[p2].dailyCallDuration[d] || 0),
-                    backgroundColor: 'rgba(157, 80, 187, 0.6)',
+                    type: 'line',
+                    label: '通話次數',
+                    data: dailyCounts,
+                    borderColor: '#9d50bb',
+                    backgroundColor: 'rgba(157, 80, 187, 0.1)',
+                    borderWidth: 3,
+                    pointRadius: 2,
+                    tension: 0.3,
+                    fill: false,
+                    yAxisID: 'yCount'
                 }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { labels: { color: '#94a3b8' } } },
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { labels: { color: '#94a3b8', font: { family: 'Outfit', size: 10 } } },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            let label = context.dataset.label || '';
+                            if (label === '通話時長 (秒)') {
+                                const sec = context.raw;
+                                if (sec >= 3600) {
+                                    return label + ': ' + Math.floor(sec / 3600) + '時' + Math.floor((sec % 3600) / 60) + '分';
+                                } else if (sec >= 60) {
+                                    return label + ': ' + Math.floor(sec / 60) + '分' + (sec % 60) + '秒';
+                                }
+                                return label + ': ' + sec + '秒';
+                            }
+                            return label + ': ' + context.raw + ' 次';
+                        }
+                    }
+                }
+            },
             scales: {
                 x: { ticks: { display: false }, grid: { display: false } },
-                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } }
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    ticks: { color: '#64748b' },
+                    title: { display: true, text: '時長', color: '#64748b' }
+                },
+                yCount: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    grid: { drawOnChartArea: false },
+                    ticks: { color: '#94a3b8', stepSize: 1 },
+                    title: { display: true, text: '次數', color: '#94a3b8' }
+                }
             },
-            plugins: {
-                legend: { labels: { color: '#94a3b8' } },
+            zoom: {
+                pan: { enabled: true, mode: 'x' },
                 zoom: {
-                    pan: { enabled: true, mode: 'x' },
-                    zoom: {
-                        wheel: { enabled: true },
-                        pinch: { enabled: true },
-                        mode: 'x'
-                    }
+                    wheel: { enabled: true },
+                    pinch: { enabled: true },
+                    mode: 'x'
                 }
             }
         }
@@ -1011,7 +1064,7 @@ function renderWordCloud(stats) {
             transition: all 0.3s ease;
             cursor: pointer;
             color:hsl(${Math.random() * 360}, 75%, 75%)"
-            onclick="updateFreqIndicator('${word}', ${freq}, '${personData}', ${participants.indexOf(p1)})"
+            onclick="updateFreqIndicator('${word}', ${freq}, '${personData}')"
             onmouseover="this.style.transform='scale(1.2) rotate(0deg)'; this.style.zIndex='10'"
             onmouseout="this.style.transform='rotate(${rotate}deg)'; this.style.zIndex='1'">
             ${word}
