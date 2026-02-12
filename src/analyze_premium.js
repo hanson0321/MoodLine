@@ -402,9 +402,7 @@ function analyzeChat(data) {
         s.uniqueKeywords = unique.sort((a, b) => s.wordFrequency[b] - s.wordFrequency[a]).slice(0, 5);
 
         // Personality Logic
-        if (s.callDuration > 7200) {
-            s.personality = { label: "長途電話煲粥達人", desc: "比起文字，更喜歡聽對方的聲音。每次通話都是一場靈魂的深度交流。" };
-        } else if (s.stickerCount > s.messageCount * 0.4) {
+        if (s.stickerCount > s.messageCount * 0.4) {
             s.personality = { label: "貼圖溝通藝術家", desc: "能用貼圖解決的絕對不打字。擅長用可愛或毒舌的插圖來表達細膩情緒。" };
         } else if (s.avgReplyTime < 3 && s.replyCount > 50) {
             s.personality = { label: "訊息秒回守護者", desc: "手機幾乎不離手，對另一半的訊息永遠保持最高權限與光速響應。" };
@@ -412,6 +410,8 @@ function analyzeChat(data) {
             s.personality = { label: "溫柔深夜靈魂", desc: "白天或許安靜，但在繁星璀璨的深夜才是最感性且話最多的時刻。" };
         } else if (s.wordCount / s.messageCount > 30) {
             s.personality = { label: "真誠長文創作者", desc: "每一條訊息都像是一封情書。不愛瑣碎，只願用真摯的長文訴說心底話。" };
+        } else if (s.callCount > 10) {
+            s.personality = { label: "通話行動派", desc: "比起等待文字跳動，更喜歡直接撥通電話，傳隔著螢幕的情緒。" };
         } else {
             s.personality = { label: "穩定情感維護者", desc: "表現均衡且穩定。不急不躁，用最自然的方式維護著這段對話的熱度。" };
         }
@@ -945,25 +945,36 @@ function renderHourlyChart(p1, p2, stats) {
 function renderRadarChart(p1, p2, stats) {
     const ctx = document.getElementById('radarChart').getContext('2d');
 
-    // Normalize data for radar (score 0-100)
     const getRadarData = (p) => {
         const s = stats[p];
         const otherP = Object.keys(stats).find(k => k !== p);
         const os = stats[otherP];
 
+        // Amplify differences: pull ratios further from 0.5
+        const calcExaggerated = (v1, v2) => {
+            const total = v1 + v2;
+            if (!total) return 50;
+            const ratio = v1 / total;
+            // Push towards 0 or 1 using a power function or linear expansion
+            return Math.max(10, Math.min(95, 50 + (ratio - 0.5) * 120));
+        };
+
+        const lateRatioS = s.lateNightCount / (s.messageCount || 1);
+        const lateRatioOs = os.lateNightCount / (os.messageCount || 1);
+
         return [
-            Math.min(100, (s.messageCount / (s.messageCount + os.messageCount)) * 200), // 話量比例
-            s.quickResponseRate, // 回覆速度 (秒回率)
-            Math.min(100, (s.callDuration / 7200) * 100), // 通話貢獻
-            Math.min(100, (s.lateNightCount / (s.messageCount || 1)) * 400), // 深夜活躍
-            Math.min(100, (s.laughter / (s.messageCount || 1)) * 1000) // 幽默度
+            calcExaggerated(s.wordCount, os.wordCount),    // 文字輸出量
+            calcExaggerated(s.quickResponseRate, os.quickResponseRate), // 秒回積極度
+            calcExaggerated(s.callCount, os.callCount),    // 通話發起頻率
+            calcExaggerated(lateRatioS, lateRatioOs),      // 深夜活躍
+            calcExaggerated(s.mediaCount, os.mediaCount)   // 圖片分享欲
         ];
     };
 
     new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: ['話量輸出', '秒回積極度', '通話熱度', '深夜活躍', '幽默頻率'],
+            labels: ['文字輸出量', '秒回積極度', '通話發起頻率', '深夜活躍', '圖片分享欲'],
             datasets: [
                 {
                     label: p1,
