@@ -1040,10 +1040,10 @@ function renderReplyDistChart(name, s, elementId, baseColor) {
                 data: data,
                 backgroundColor: [
                     baseColor,
-                    'rgba(255, 255, 255, 0.4)',
-                    'rgba(255, 255, 255, 0.25)',
-                    'rgba(255, 255, 255, 0.12)',
-                    'rgba(255, 255, 255, 0.05)'
+                    baseColor + 'bf', // 75% opacity
+                    baseColor + '80', // 50% opacity
+                    baseColor + '40', // 25% opacity
+                    baseColor + '1a'  // 10% opacity
                 ],
                 borderColor: 'rgba(255, 255, 255, 0.1)',
                 borderWidth: 1
