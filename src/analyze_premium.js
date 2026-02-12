@@ -613,17 +613,6 @@ function renderDashboard(data) {
         </div>
     `;
 
-    // 7. Longest
-    container.innerHTML += `
-        <div class="card-premium" style="margin-bottom:32px;">
-            <h3 style="margin-bottom:20px; color:var(--text-main)">最長發言內容</h3>
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:24px;">
-                ${renderLongMsg(p1, stats[p1].longestMsg)}
-                ${renderLongMsg(p2, stats[p2].longestMsg)}
-            </div>
-        </div>
-    `;
-
     // 8. Radar Analysis (Moved to pre-bottom)
     container.innerHTML += `
         <div class="section-header">
