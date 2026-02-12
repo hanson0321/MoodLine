@@ -836,38 +836,26 @@ function renderCallDetailChart(p1, p2, stats) {
     const ctx = document.getElementById('callChart').getContext('2d');
     const allDates = Array.from(new Set([
         ...Object.keys(stats[p1].dailyCallDuration),
-        ...Object.keys(stats[p2].dailyCallDuration),
-        ...Object.keys(stats[p1].dailyCallCount),
-        ...Object.keys(stats[p2].dailyCallCount)
+        ...Object.keys(stats[p2].dailyCallDuration)
     ])).sort();
 
     const dailyDuration = allDates.map(d => (stats[p1].dailyCallDuration[d] || 0) + (stats[p2].dailyCallDuration[d] || 0));
-    const dailyCounts = allDates.map(d => (stats[p1].dailyCallCount[d] || 0) + (stats[p2].dailyCallCount[d] || 0));
 
     new Chart(ctx, {
+        type: 'line',
         data: {
             labels: allDates,
             datasets: [
                 {
-                    type: 'bar',
-                    label: '通話時長 (秒)',
+                    label: '每日通話總時長',
                     data: dailyDuration,
-                    backgroundColor: 'rgba(0, 210, 255, 0.4)',
-                    borderColor: 'rgba(0, 210, 255, 0.8)',
-                    borderWidth: 1,
-                    yAxisID: 'y'
-                },
-                {
-                    type: 'line',
-                    label: '通話次數',
-                    data: dailyCounts,
-                    borderColor: '#9d50bb',
-                    backgroundColor: 'rgba(157, 80, 187, 0.1)',
+                    borderColor: '#00d2ff',
+                    backgroundColor: 'rgba(0, 210, 255, 0.1)',
                     borderWidth: 3,
-                    pointRadius: 2,
-                    tension: 0.3,
-                    fill: false,
-                    yAxisID: 'yCount'
+                    pointRadius: 0,
+                    pointHoverRadius: 6,
+                    tension: 0.4,
+                    fill: true
                 }
             ]
         },
@@ -876,21 +864,17 @@ function renderCallDetailChart(p1, p2, stats) {
             maintainAspectRatio: false,
             interaction: { mode: 'index', intersect: false },
             plugins: {
-                legend: { labels: { color: '#94a3b8', font: { family: 'Outfit', size: 10 } } },
+                legend: { display: false },
                 tooltip: {
                     callbacks: {
                         label: function (context) {
-                            let label = context.dataset.label || '';
-                            if (label === '通話時長 (秒)') {
-                                const sec = context.raw;
-                                if (sec >= 3600) {
-                                    return label + ': ' + Math.floor(sec / 3600) + '時' + Math.floor((sec % 3600) / 60) + '分';
-                                } else if (sec >= 60) {
-                                    return label + ': ' + Math.floor(sec / 60) + '分' + (sec % 60) + '秒';
-                                }
-                                return label + ': ' + sec + '秒';
+                            const sec = context.raw;
+                            if (sec >= 3600) {
+                                return '總時長: ' + Math.floor(sec / 3600) + '時' + Math.floor((sec % 3600) / 60) + '分';
+                            } else if (sec >= 60) {
+                                return '總時長: ' + Math.floor(sec / 60) + '分' + (sec % 60) + '秒';
                             }
-                            return label + ': ' + context.raw + ' 次';
+                            return '總時長: ' + sec + '秒';
                         }
                     }
                 }
@@ -898,20 +882,15 @@ function renderCallDetailChart(p1, p2, stats) {
             scales: {
                 x: { ticks: { display: false }, grid: { display: false } },
                 y: {
-                    type: 'linear',
-                    display: true,
-                    position: 'left',
                     grid: { color: 'rgba(255,255,255,0.05)' },
-                    ticks: { color: '#64748b' },
-                    title: { display: true, text: '時長', color: '#64748b' }
-                },
-                yCount: {
-                    type: 'linear',
-                    display: true,
-                    position: 'right',
-                    grid: { drawOnChartArea: false },
-                    ticks: { color: '#94a3b8', stepSize: 1 },
-                    title: { display: true, text: '次數', color: '#94a3b8' }
+                    ticks: {
+                        color: '#64748b',
+                        callback: function (value) {
+                            if (value >= 3600) return Math.floor(value / 3600) + 'h';
+                            if (value >= 60) return Math.floor(value / 60) + 'm';
+                            return value + 's';
+                        }
+                    }
                 }
             },
             zoom: {
