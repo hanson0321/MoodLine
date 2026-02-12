@@ -572,7 +572,7 @@ function renderDashboard(data) {
                 <h2 class="section-title">深度行為觀察</h2>
                 <div class="section-line"></div>
             </div>
-            <div class="grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap:24px; margin-bottom:32px;">
+            <div class="grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr)); gap:24px; margin-bottom:32px;">
                 <div class="card-premium">
                     <h3 style="margin-bottom:20px; color:var(--primary)">情感詞彙頻率</h3>
                     <div style="display:flex; flex-direction:column; gap:16px;">
@@ -584,7 +584,7 @@ function renderDashboard(data) {
                 </div>
                 <div class="card-premium">
                     <h3 style="margin-bottom:20px; color:var(--secondary)">對話行為數據</h3>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:16px;">
                         ${renderTrophyCard('持續對話天數', `${stats[p1].streak.max} 天`, `${stats[p2].streak.max} 天`)}
                         ${renderTrophyCard('專屬口頭禪', (stats[p1].uniqueKeywords.join(', ') || '尚無紀錄'), (stats[p2].uniqueKeywords.join(', ') || '尚無紀錄'))}
                         ${renderTrophyCard('大笑頻率', `${stats[p1].laughter} 次`, `${stats[p2].laughter} 次`)}
@@ -592,7 +592,7 @@ function renderDashboard(data) {
                     </div>
                 </div>
                 <div class="card-premium" style="grid-column: span 2;">
-                   <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
+                   <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:24px;">
                         ${renderLongMsg(displayName1, stats[p1].longestMsg)}
                         ${renderLongMsg(displayName2, stats[p2].longestMsg)}
                    </div>
