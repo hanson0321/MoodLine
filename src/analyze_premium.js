@@ -656,6 +656,18 @@ function showWrappedSummary(p1, p2, stats) {
     };
 
     content.innerHTML = `
+        <!-- Color Legend -->
+        <div style="display:flex; justify-content:center; gap:24px; margin-bottom:24px; font-size:0.8rem; font-weight:600;">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <div style="width:12px; height:12px; border-radius:3px; background:var(--primary)"></div>
+                <span>${p1}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <div style="width:12px; height:12px; border-radius:3px; background:var(--secondary)"></div>
+                <span>${p2}</span>
+            </div>
+        </div>
+
         <div class="wrapped-stat-item">
             <div class="wrapped-stat-label">深度連結指數</div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:10px;">
