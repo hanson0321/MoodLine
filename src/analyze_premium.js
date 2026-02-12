@@ -815,6 +815,18 @@ function renderTrendChart(p1, p2, stats) {
             scales: {
                 x: { grid: { display: false }, ticks: { color: '#64748b' } },
                 y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' }, beginAtZero: true }
+            },
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { labels: { color: '#94a3b8', font: { family: 'Outfit' } } },
+                zoom: {
+                    pan: { enabled: true, mode: 'x' },
+                    zoom: {
+                        wheel: { enabled: true },
+                        pinch: { enabled: true },
+                        mode: 'x'
+                    }
+                }
             }
         }
     });
@@ -847,6 +859,17 @@ function renderCallDetailChart(p1, p2, stats) {
             scales: {
                 x: { ticks: { display: false }, grid: { display: false } },
                 y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } }
+            },
+            plugins: {
+                legend: { labels: { color: '#94a3b8' } },
+                zoom: {
+                    pan: { enabled: true, mode: 'x' },
+                    zoom: {
+                        wheel: { enabled: true },
+                        pinch: { enabled: true },
+                        mode: 'x'
+                    }
+                }
             }
         }
     });
