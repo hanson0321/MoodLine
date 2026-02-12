@@ -1041,10 +1041,10 @@ function renderReplyDistChart(name, s, elementId, baseColor) {
                 data: data,
                 backgroundColor: [
                     baseColor, // 100%
-                    baseColor + '99', // 60%
-                    baseColor + '4d', // 30%
-                    'rgba(255, 255, 255, 0.15)', // Light grey for slow
-                    'rgba(255, 255, 255, 0.05)'  // Very light for very slow
+                    baseColor + 'b3', // 70%
+                    baseColor + '73', // 45%
+                    baseColor + '40', // 25%
+                    baseColor + '1a'  // 10%
                 ],
                 borderColor: 'rgba(255, 255, 255, 0.1)',
                 borderWidth: 1
