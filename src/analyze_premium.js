@@ -362,22 +362,6 @@ function analyzeChat(data) {
         s.streak.max = Math.max(maxStreak, currentStreak);
         s.avgReplyTime = s.replyTimes.length ? (s.replyTimes.reduce((a, b) => a + b, 0) / s.replyTimes.length) / 1000 / 60 : 0;
 
-        const speedScore = Math.max(0, 100 - (s.avgReplyTime * 1.5));
-        const totalInit = Object.values(stats).reduce((a, v) => a + v.initiations, 0);
-        const initScore = totalInit ? (s.initiations / totalInit) * 100 : 0;
-        const totalWords = Object.values(stats).reduce((a, v) => a + v.wordCount, 0);
-        const investScore = totalWords ? (s.wordCount / totalWords) * 100 : 0;
-        const emoRatio = s.messageCount ? ((s.modalParticles + s.stickerCount) / s.messageCount) * 100 : 0;
-        const emoScore = Math.min(100, emoRatio * 2);
-        const lateNightRatio = s.messageCount ? (s.lateNightCount / s.messageCount) * 100 : 0;
-        const lateNightBonus = Math.min(20, lateNightRatio * 0.5);
-
-        s.lovesickScore = Math.round(Math.min(100, (speedScore * 0.3) + (initScore * 0.2) + (investScore * 0.25) + (emoScore * 0.15) + lateNightBonus));
-
-        if (s.lovesickScore <= 30) { s.lovesickLevel = "人間清醒"; s.lovesickDesc = "社交客氣，毫無波瀾。回覆慢，字數少，情緒平穩。"; }
-        else if (s.lovesickScore <= 60) { s.lovesickLevel = "好感曖昧"; s.lovesickDesc = "水面下的角力，有點意思。會主動開話題，有來有往。"; }
-        else if (s.lovesickScore <= 85) { s.lovesickLevel = "深陷其中"; s.lovesickDesc = "訊息秒回，情緒被對方牽著走。投入大量字數與貼圖。"; }
-        else { s.lovesickLevel = "末期暈船"; s.lovesickDesc = "自我攻略，沒救了請送醫。極度卑微，充滿討好與等待。"; }
     });
 
     // Finalize Stats
@@ -387,6 +371,19 @@ function analyzeChat(data) {
 
         // Quick Response Rate
         s.quickResponseRate = s.replyCount ? Math.round((s.quickResponses / s.replyCount) * 100) : 0;
+
+        const totalWords = Object.values(stats).reduce((a, v) => a + v.wordCount, 0);
+        const wordScore = totalWords ? (s.wordCount / totalWords) * 100 : 50;
+
+        const totalMedia = Object.values(stats).reduce((a, v) => a + v.mediaCount, 0);
+        const mediaScore = totalMedia ? (s.mediaCount / totalMedia) * 100 : 50;
+
+        s.lovesickScore = Math.round((wordScore * 0.4) + (mediaScore * 0.4) + (s.quickResponseRate * 0.2));
+
+        if (s.lovesickScore <= 35) { s.lovesickLevel = "人間清醒"; s.lovesickDesc = "社交客氣，毫無波瀾。回覆速度、投入程度與主動頻率均保持在安全邊界。"; }
+        else if (s.lovesickScore <= 55) { s.lovesickLevel = "好感曖昧"; s.lovesickDesc = "水面下的角力，有點意思。會主動開話題或分享生活，雙方互動熱絡且有來有往。"; }
+        else if (s.lovesickScore <= 75) { s.lovesickLevel = "深陷其中"; s.lovesickDesc = "訊息秒回，情緒被對方牽著走。投入大量的字數與生活碎片，明顯偏向對方的重心。"; }
+        else { s.lovesickLevel = "末期暈船"; s.lovesickDesc = "自我攻略，沒救了請送醫。極度卑微的回覆速度與單方面的輸出，情感天平嚴重傾斜。"; }
 
         // Unique Keywords (Not in common stop words and rarely used by other)
         const others = participants.filter(o => o !== p);
@@ -712,21 +709,7 @@ function renderMetricPremium(title, v1, v2, val1, val2, lowerIsBetter = false) {
 }
 
 function renderKeywordRow(label, v1, v2) {
-    const total = v1 + v2;
-    const p1Pct = total ? Math.round((v1 / total) * 100) : 50;
-    const p2Pct = 100 - p1Pct;
-    return `
-        <div style="font-size:0.875rem;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:6px; color:var(--text-muted);">
-                <span>${label}</span>
-                <span>${p1Pct}% / ${p2Pct}%</span>
-            </div>
-            <div class="comparison-bar" style="height:4px;">
-                <div class="bar-part" style="width: ${p1Pct}%; background: var(--primary)"></div>
-                <div class="bar-part" style="width: ${100 - p1Pct}%; background: var(--secondary)"></div>
-            </div>
-        </div>
-    `;
+    return renderMetricPremium(label, v1 + '次', v2 + '次', v1, v2);
 }
 
 function renderTrophyCard(title, v1, v2) {
