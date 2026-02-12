@@ -595,14 +595,14 @@ function renderDashboard(data) {
             </div>
         </div>
 
-        <button class="btn-wrapped-share" onclick="showWrappedSummary('${p1}', '${p2}', ${JSON.stringify(stats).replace(/"/g, '&quot;')})">✨ 查看年度回顧</button>
+        <button class="btn-wrapped-share" onclick="showWrappedSummary('${p1}', '${p2}', ${JSON.stringify(stats).replace(/"/g, '&quot;')})">✨ 一鍵截圖分享</button>
 
         <div id="wrappedModal" onclick="closeWrapped()">
             <div class="wrapped-card" onclick="event.stopPropagation()">
                 <div class="wrapped-decoration"></div>
-                <div class="wrapped-header">MoodLine Summary</div>
+                <div class="wrapped-header">MoodLine </div>
                 <div id="wrappedContent"></div>
-                <div class="wrapped-footer">此關係分析僅供參考，請珍惜身邊的人</div>
+                <div class="wrapped-footer">此分析僅供參考，請珍惜身邊的人</div>
                 <button style="margin-top:20px; padding:10px 20px; border-radius:30px; border:1px solid rgba(255,255,255,0.2); background:transparent; color:#fff; cursor:pointer;" onclick="closeWrapped()">關閉</button>
             </div>
         </div>
@@ -674,7 +674,8 @@ function showWrappedSummary(p1, p2, stats) {
 
         <div class="wrapped-stat-item">
             ${renderWrappedBar(s1.wordCount, s2.wordCount, '總文字量對比')}
-            ${renderWrappedBar(s1.mediaCount + s1.stickerCount, s2.mediaCount + s2.stickerCount, '多媒體分享(含貼圖)對比')}
+            ${renderWrappedBar(s1.mediaCount, s2.mediaCount, '照片/影片分享對比')}
+            ${renderWrappedBar(s1.stickerCount, s2.stickerCount, '貼圖使用頻率對比')}
         </div>
 
         <div class="wrapped-stat-item">
