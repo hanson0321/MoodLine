@@ -591,12 +591,7 @@ function renderDashboard(data) {
                         ${renderTrophyCard('超過1小時才回', `${stats[p1].slowReplies} 次`, `${stats[p2].slowReplies} 次`)}
                     </div>
                 </div>
-                <div class="card-premium" style="grid-column: span 2;">
-                   <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:24px;">
-                        ${renderLongMsg(displayName1, stats[p1].longestMsg)}
-                        ${renderLongMsg(displayName2, stats[p2].longestMsg)}
-                   </div>
-                </div>
+
             </div>
         </div>
     `;
@@ -804,17 +799,6 @@ function renderMetricPremium(title, v1, v2, val1, val2) {
     `;
 }
 
-function renderLongMsg(name, msg) {
-    const displayMsg = isPrivacyMode ? "此內容已受隱私模式遮罩保護，無法載入敏感資訊..." : msg.content;
-    return `
-        <div style="background:rgba(255,255,255,0.02); padding:20px; border-radius:16px; border:1px solid var(--glass-border);">
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:12px;">${name} 的最長回覆 (${msg.length} 字)</div>
-            <div class="${isPrivacyMode ? 'mask-text' : ''}" style="font-style:italic; color:var(--text-main); font-size:0.9rem; line-height:1.6; max-height:120px; overflow-y:auto; padding-right:8px;">
-                "${displayMsg}"
-            </div>
-        </div>
-    `;
-}
 
 function renderKeywordRow(label, v1, v2) { return renderMetricPremium(label, '', '', v1, v2); }
 function renderTrophyCard(title, v1, v2) {
