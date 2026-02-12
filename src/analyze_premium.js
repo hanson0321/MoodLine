@@ -11,26 +11,27 @@ if (fileInput) {
 }
 
 // Global Counter Logic (using a public API)
-const COUNTER_NAMESPACE = "moodline_production";
-const COUNTER_KEY = "analyses_v2"; // Changed key to reset counter
+const COUNTER_NAMESPACE = "moodline.zeabur.app";
+const COUNTER_KEY = "analyses_total";
 
 document.addEventListener('DOMContentLoaded', () => {
-    fetch(`https://api.countapi.xyz/get/${COUNTER_NAMESPACE}/${COUNTER_KEY}`)
+    fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}`)
         .then(res => res.json())
         .then(data => {
-            document.getElementById('totalAnalyses').textContent = (data.value || 0).toLocaleString();
+            const count = data.count || 0;
+            document.getElementById('totalAnalyses').textContent = count.toLocaleString();
         })
         .catch(() => {
-            // If the key doesn't exist yet, show 0
             document.getElementById('totalAnalyses').textContent = "0";
         });
 });
 
 function incrementCounter() {
-    fetch(`https://api.countapi.xyz/hit/${COUNTER_NAMESPACE}/${COUNTER_KEY}`)
+    fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/up`)
         .then(res => res.json())
         .then(data => {
-            if (data.value) document.getElementById('totalAnalyses').textContent = data.value.toLocaleString();
+            const count = data.count || 0;
+            document.getElementById('totalAnalyses').textContent = count.toLocaleString();
         })
         .catch(err => console.error("Counter error:", err));
 }
