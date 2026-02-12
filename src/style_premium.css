@@ -127,13 +127,7 @@ body {
     box-shadow: 0 8px 30px rgba(0, 210, 255, 0.2);
 }
 
-.dev-github-link {
-    font-size: 0.65rem;
-    color: var(--primary);
-    opacity: 0.8;
-    margin-top: 4px;
-    font-weight: 500;
-}
+
 
 .dev-avatar {
     width: 48px;
