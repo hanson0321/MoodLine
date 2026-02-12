@@ -187,7 +187,7 @@ function analyzeChat(data) {
             hourlyFreq: new Array(24).fill(0),
             quickResponses: 0,
             uniqueKeywords: [],
-            replyDist: { m5: 0, m30: 0, h1: 0, h6: 0, slow: 0 },
+            replyDist: { m5: 0, m30: 0, h1: 0, slow: 0 },
             personality: { label: "", desc: "" }
         };
     });
@@ -320,7 +320,6 @@ function analyzeChat(data) {
                 if (diffMins <= 5) stats[p].replyDist.m5++;
                 else if (diffMins <= 30) stats[p].replyDist.m30++;
                 else if (diffMins <= 60) stats[p].replyDist.h1++;
-                else if (diffMins <= 360) stats[p].replyDist.h6++;
                 else stats[p].replyDist.slow++;
 
                 if (diff < 5 * 60 * 1000) stats[p].quickResponses++;
@@ -541,8 +540,8 @@ function renderDashboard(data) {
             <div class="section-line"></div>
         </div>
         <div class="card-premium" style="margin-bottom:32px; position:relative; padding-top: 60px;">
-            <div id="wordFreqIndicator" style="position:absolute; top:20px; left:20px; right:20px; font-size:0.9rem; color:var(--text-muted); font-weight:700; background:rgba(255,255,255,0.05); padding:8px 16px; border-radius:8px; text-align:center; transition:all 0.3s;">
-                點擊下方單字查看出現頻率
+            <div id="wordFreqIndicator" style="position:absolute; top:-10px; left:50%; transform:translateX(-50%); width:90%; font-size:1.2rem; color:var(--text-main); font-weight:800; background:rgba(0, 210, 255, 0.2); border:2px solid var(--primary); padding:12px 20px; border-radius:16px; text-align:center; transition:all 0.3s; box-shadow: 0 10px 30px rgba(0,210,255,0.3); z-index:10;">
+                點擊單字庫：看誰才是話題主導者！
             </div>
             <div id="wordCloudContainer" style="display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px; padding:10px; min-height:200px; max-height:400px; overflow-y:auto;">
                 <!-- Word cloud will be rendered here -->
@@ -673,9 +672,9 @@ function renderDashboard(data) {
 }
 
 function renderPlayerBox(name, s) {
-
+    const safeId = name.replace(/[^\w]/g, '_');
     return `
-        <div class="player-stat-box">
+        <div class="player-stat-box" id="player-box-${safeId}" style="padding: 10px; border-radius: 20px; transition: all 0.5s ease;">
             <div class="player-name">${name}</div>
             <div class="lovesick-index">
                 <svg class="lovesick-circle" viewBox="0 0 100 100">
@@ -720,13 +719,13 @@ function renderMetricPremium(title, v1, v2, val1, val2, lowerIsBetter = false) {
             <div class="metric-header" style="margin-bottom:12px;">
                 <span class="metric-title">${title}</span>
                 <div style="display:flex; gap:16px;">
-                    <span style="font-weight: 700; color: var(--primary)">${v1} <small style="font-size:0.7em; opacity:0.6;">(${p1Pct}%)</small></span>
-                    <span style="font-weight: 700; color: var(--secondary)">${v2} <small style="font-size:0.7em; opacity:0.6;">(${p2Pct}%)</small></span>
+                    <span style="font-weight: 700; color: var(--primary)">${v1}</span>
+                    <span style="font-weight: 700; color: var(--secondary)">${v2}</span>
                 </div>
             </div>
             <div class="comparison-bar">
-                <div class="bar-part" style="width: ${p1Pct}%; background: var(--primary)"></div>
-                <div class="bar-part" style="width: ${p2Pct}%; background: var(--secondary)"></div>
+                <div class="bar-part" style="width: ${p1Pct}%; background: var(--primary)">${p1Pct > 10 ? p1Pct + '%' : ''}</div>
+                <div class="bar-part" style="width: ${p2Pct}%; background: var(--secondary)">${p2Pct > 10 ? p2Pct + '%' : ''}</div>
             </div>
         </div>
     `;
@@ -991,7 +990,7 @@ function renderWordCloud(stats) {
         }
     });
 
-    const sortedWords = Object.entries(allFreq).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    const sortedWords = Object.entries(allFreq).sort((a, b) => b[1] - a[1]).slice(0, 15);
     const maxFreq = sortedWords[0] ? sortedWords[0][1] : 1;
 
     container.innerHTML = sortedWords.map(([word, freq]) => {
@@ -1031,19 +1030,49 @@ window.updateFreqIndicator = function (word, total, personDataStr) {
     const indicator = document.getElementById('wordFreqIndicator');
     if (indicator) {
         const personData = JSON.parse(personDataStr);
+
+        let winner = null;
+        let maxCount = -1;
+        for (let name in personData) {
+            if (personData[name] > maxCount) {
+                maxCount = personData[name];
+                winner = name;
+            } else if (personData[name] === maxCount) {
+                winner = null; // Tie
+            }
+        }
+
         const breakdown = Object.entries(personData)
-            .map(([name, count]) => `${name} ${count}次`)
+            .map(([name, count]) => {
+                const isWinner = name === winner;
+                return isWinner ? `<span style="color:var(--primary); font-weight:900;">👑 ${name} ${count}次</span>` : `${name} ${count}次`;
+            })
             .join(' | ');
 
         indicator.innerHTML = `<span style="color:var(--primary)">${word}</span>: 共 ${total}次 (${breakdown})`;
-        indicator.style.background = 'rgba(0, 210, 255, 0.15)';
+        indicator.style.background = 'rgba(0, 210, 255, 0.25)';
         indicator.style.borderColor = 'var(--primary)';
         indicator.style.color = '#fff';
 
-        // Mobile UX: Scroll to top of card if indicator might be off-screen
-        if (window.innerWidth < 768) {
-            indicator.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (winner) {
+            const safeWinnerId = winner.replace(/[^\w]/g, '_');
+            const winnerBox = document.getElementById(`player-box-${safeWinnerId}`);
+            if (winnerBox) {
+                // Scroll to the card so the animation is visible
+                winnerBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                winnerBox.classList.remove('winner-anim');
+                void winnerBox.offsetWidth; // Trigger reflow
+                winnerBox.classList.add('winner-anim');
+
+                // Extra visual pop
+                winnerBox.style.background = 'rgba(0, 210, 255, 0.15)';
+                setTimeout(() => {
+                    winnerBox.style.background = 'transparent';
+                }, 2000);
+            }
         }
+
         setTimeout(() => {
             indicator.style.background = 'rgba(255,255,255,0.05)';
             indicator.style.borderColor = 'transparent';
@@ -1053,8 +1082,8 @@ window.updateFreqIndicator = function (word, total, personDataStr) {
 
 function renderReplyDistChart(name, s, elementId, baseColor) {
     const ctx = document.getElementById(elementId).getContext('2d');
-    const labels = ['5分內', '30分內', '1小時內', '6小時內', '6小時以上'];
-    const data = [s.replyDist.m5, s.replyDist.m30, s.replyDist.h1, s.replyDist.h6, s.replyDist.slow];
+    const labels = ['5分內', '30分內', '1小時內', '1小時以上'];
+    const data = [s.replyDist.m5, s.replyDist.m30, s.replyDist.h1, s.replyDist.slow];
 
     new Chart(ctx, {
         type: 'doughnut',
@@ -1065,9 +1094,8 @@ function renderReplyDistChart(name, s, elementId, baseColor) {
                 backgroundColor: [
                     baseColor, // 100%
                     baseColor + 'b3', // 70%
-                    baseColor + '73', // 45%
-                    baseColor + '40', // 25%
-                    baseColor + '1a'  // 10%
+                    baseColor + '66', // 40%
+                    'rgba(255, 255, 255, 0.1)' // Grey for slow
                 ],
                 borderColor: 'rgba(255, 255, 255, 0.1)',
                 borderWidth: 1
