@@ -172,7 +172,7 @@ body {
 
 .main-title {
     font-family: var(--font-heading);
-    font-size: 4.5rem;
+    font-size: 5rem;
     /* Massive, modern */
     font-weight: 800;
     letter-spacing: -0.03em;
@@ -193,7 +193,7 @@ body {
 }
 
 .sub-title {
-    font-size: 1.25rem;
+    font-size: 1.4rem;
     color: var(--text-secondary);
     font-weight: 400;
     max-width: 600px;
@@ -255,7 +255,7 @@ body {
 
 .section-title {
     font-family: var(--font-heading);
-    font-size: 1.75rem;
+    font-size: 2.2rem;
     font-weight: 700;
     color: var(--text-main);
     letter-spacing: -0.01em;

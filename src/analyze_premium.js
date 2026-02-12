@@ -443,29 +443,29 @@ function renderDashboard(data) {
     container.innerHTML += `
         <div class="card-premium" style="margin-bottom:32px; display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:32px; text-align:center;">
             <div>
-                <div style="font-size:0.875rem; color:var(--text-muted); margin-bottom:8px;">對話時間跨度</div>
-                <div style="font-weight:700; font-size:1.2rem; color:var(--text-main);">${data.globalStats.totalDays} 天</div>
+                <div style="font-size:1rem; color:var(--text-muted); margin-bottom:8px;">對話時間跨度</div>
+                <div style="font-weight:800; font-size:1.5rem; color:var(--text-main);">${data.globalStats.totalDays} 天</div>
                 <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:4px;">
                     ${data.globalStats.startDate.toLocaleDateString()} - ${data.globalStats.endDate.toLocaleDateString()}
                 </div>
             </div>
             <div>
-                <div style="font-size:0.875rem; color:var(--text-muted); margin-bottom:8px;">總訊息數量</div>
-                <div style="font-weight:700; font-size:1.2rem; color:var(--text-main);">${data.globalStats.totalMessages} 條</div>
+                <div style="font-size:1rem; color:var(--text-muted); margin-bottom:8px;">總訊息數量</div>
+                <div style="font-weight:800; font-size:1.5rem; color:var(--text-main);">${data.globalStats.totalMessages} 條</div>
                 <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:4px;">
                     日均 ${Math.round(data.globalStats.totalMessages / data.globalStats.totalDays)} 條
                 </div>
             </div>
             <div>
-                <div style="font-size:0.875rem; color:var(--text-muted); margin-bottom:8px;">貼圖總量</div>
-                <div style="font-weight:700; font-size:1.2rem; color:var(--text-main);">${Object.values(stats).reduce((a, v) => a + v.stickerCount, 0)} 個</div>
+                <div style="font-size:1rem; color:var(--text-muted); margin-bottom:8px;">貼圖總量</div>
+                <div style="font-weight:800; font-size:1.5rem; color:var(--text-main);">${Object.values(stats).reduce((a, v) => a + v.stickerCount, 0)} 個</div>
                 <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:4px;">
                     聊天靈魂的展現
                 </div>
             </div>
             <div>
-                <div style="font-size:0.875rem; color:var(--text-muted); margin-bottom:8px;">累積文字總量</div>
-                <div style="font-weight:700; font-size:1.2rem; color:var(--text-main);">${data.globalStats.totalWords} 字</div>
+                <div style="font-size:1rem; color:var(--text-muted); margin-bottom:8px;">累積文字總量</div>
+                <div style="font-weight:800; font-size:1.5rem; color:var(--text-main);">${data.globalStats.totalWords} 字</div>
                 <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:4px;">
                     約可換算成 ${Math.ceil(data.globalStats.totalWords / 400)} 篇小論文
                 </div>
