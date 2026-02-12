@@ -653,8 +653,8 @@ function renderDashboard(data) {
         </div>
         <div class="card-premium" style="margin-bottom:32px;">
             <div class="player-comparison">
-                ${renderPlayerBox(p1, stats[p1])}
-                ${renderPlayerBox(p2, stats[p2])}
+                ${renderPlayerBox(p1, stats[p1], 0)}
+                ${renderPlayerBox(p2, stats[p2], 1)}
             </div>
             <div style="text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.9rem;">
                 根據回覆速度、話題主動性、情感投入度與深夜活躍度生成的綜合評分。
@@ -671,10 +671,9 @@ function renderDashboard(data) {
     renderReplyDistChart(p2, stats[p2], 'replyDistChart2', '#9d50bb');
 }
 
-function renderPlayerBox(name, s) {
-    const safeId = name.replace(/[^\w]/g, '_');
+function renderPlayerBox(name, s, index) {
     return `
-        <div class="player-stat-box" id="player-box-${safeId}" style="padding: 10px; border-radius: 20px; transition: all 0.5s ease;">
+        <div class="player-stat-box" id="player-box-${index}" style="padding: 10px; border-radius: 20px; transition: all 0.5s ease;">
             <div class="player-name">${name}</div>
             <div class="lovesick-index">
                 <svg class="lovesick-circle" viewBox="0 0 100 100">
@@ -1012,7 +1011,7 @@ function renderWordCloud(stats) {
             transition: all 0.3s ease;
             cursor: pointer;
             color:hsl(${Math.random() * 360}, 75%, 75%)"
-            onclick="updateFreqIndicator('${word}', ${freq}, '${personData}')"
+            onclick="updateFreqIndicator('${word}', ${freq}, '${personData}', ${participants.indexOf(p1)})"
             onmouseover="this.style.transform='scale(1.2) rotate(0deg)'; this.style.zIndex='10'"
             onmouseout="this.style.transform='rotate(${rotate}deg)'; this.style.zIndex='1'">
             ${word}
@@ -1055,22 +1054,20 @@ window.updateFreqIndicator = function (word, total, personDataStr) {
         indicator.style.color = '#fff';
 
         if (winner) {
-            const safeWinnerId = winner.replace(/[^\w]/g, '_');
-            const winnerBox = document.getElementById(`player-box-${safeWinnerId}`);
-            if (winnerBox) {
-                // Scroll to the card so the animation is visible
-                winnerBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Find the winner box by checking the name inside player boxes
+            const boxes = document.querySelectorAll('.player-stat-box');
+            boxes.forEach(box => {
+                if (box.querySelector('.player-name').textContent.trim() === winner.trim()) {
+                    box.classList.remove('winner-anim');
+                    void box.offsetWidth;
+                    box.classList.add('winner-anim');
 
-                winnerBox.classList.remove('winner-anim');
-                void winnerBox.offsetWidth; // Trigger reflow
-                winnerBox.classList.add('winner-anim');
-
-                // Extra visual pop
-                winnerBox.style.background = 'rgba(0, 210, 255, 0.15)';
-                setTimeout(() => {
-                    winnerBox.style.background = 'transparent';
-                }, 2000);
-            }
+                    box.style.background = 'rgba(0, 210, 255, 0.15)';
+                    setTimeout(() => {
+                        box.style.background = 'transparent';
+                    }, 2000);
+                }
+            });
         }
 
         setTimeout(() => {
