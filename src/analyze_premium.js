@@ -381,7 +381,7 @@ function analyzeChat(data) {
         s.lovesickScore = Math.round((wordScore * 0.4) + (mediaScore * 0.4) + (s.quickResponseRate * 0.2));
 
         if (s.lovesickScore <= 35) { s.lovesickLevel = "人間清醒"; s.lovesickDesc = "社交客氣，毫無波瀾。回覆速度、投入程度與主動頻率均保持在安全邊界。"; }
-        else if (s.lovesickScore <= 55) { s.lovesickLevel = "好感曖昧"; s.lovesickDesc = "水面下的角力，有點意思。會主動開話題或分享生活，雙方互動熱絡且有來有往。"; }
+        else if (s.lovesickScore <= 55) { s.lovesickLevel = "好感曖昧"; s.lovesickDesc = "會主動開話題或分享生活，雙方互動熱絡且有來有往。"; }
         else if (s.lovesickScore <= 75) { s.lovesickLevel = "深陷其中"; s.lovesickDesc = "訊息秒回，情緒被對方牽著走。投入大量的字數與生活碎片，明顯偏向對方的重心。"; }
         else { s.lovesickLevel = "末期暈船"; s.lovesickDesc = "自我攻略，沒救了請送醫。極度卑微的回覆速度與單方面的輸出，情感天平嚴重傾斜。"; }
 
@@ -634,9 +634,6 @@ function renderDashboard(data) {
                 ${renderPlayerBox(p1, stats[p1], 0)}
                 ${renderPlayerBox(p2, stats[p2], 1)}
             </div>
-            <div style="text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.9rem;">
-                根據回覆速度、話題主動性、情感投入度與深夜活躍度生成的綜合評分。
-            </div>
         </div>
     `;
 
@@ -709,7 +706,7 @@ function renderMetricPremium(title, v1, v2, val1, val2, lowerIsBetter = false) {
 }
 
 function renderKeywordRow(label, v1, v2) {
-    return renderMetricPremium(label, v1 + '次', v2 + '次', v1, v2);
+    return renderMetricPremium(label, '', '', v1, v2);
 }
 
 function renderTrophyCard(title, v1, v2) {
