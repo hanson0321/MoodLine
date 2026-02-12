@@ -399,6 +399,20 @@ function renderDashboard(data) {
     const container = document.getElementById('dashboard-content');
     container.innerHTML = '';
 
+    // 0. Color Legend for the whole dashboard
+    container.innerHTML += `
+        <div class="reveal-init" style="display:flex; justify-content:center; gap:32px; margin-bottom:40px; font-weight:700; font-size:1.1rem;">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:20px; height:20px; border-radius:6px; background:var(--primary); box-shadow:0 0 15px var(--primary-glow);"></div>
+                <span style="color:var(--primary)">${p1}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:20px; height:20px; border-radius:6px; background:var(--secondary); box-shadow:0 0 15px var(--secondary-glow);"></div>
+                <span style="color:var(--secondary)">${p2}</span>
+            </div>
+        </div>
+    `;
+
     // 1. Global Stats
     container.innerHTML += `
         <div class="reveal-init">
