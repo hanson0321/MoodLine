@@ -5,6 +5,9 @@ const loadingDiv = document.getElementById('loading');
 const dashboardDiv = document.getElementById('dashboard');
 const errorDiv = document.getElementById('error');
 
+let currentAnalysis = null;
+let isPrivacyMode = false;
+
 // Event Listeners
 if (fileInput) {
     fileInput.addEventListener('change', handleFileUpload);
@@ -62,11 +65,11 @@ function handleFileUpload(event) {
             if (!chatData || chatData.messages.length === 0) {
                 throw new Error("No messages found or invalid format.");
             }
-            const analysis = analyzeChat(chatData);
-            if (!analysis) {
+            currentAnalysis = analyzeChat(chatData);
+            if (!currentAnalysis) {
                 throw new Error("無法分析數據：請確認檔案中有至少兩位參與者的對話。");
             }
-            renderDashboard(analysis);
+            renderDashboard(currentAnalysis);
             incrementCounter(); // Increment on success
 
             loadingDiv.classList.add('hidden');
@@ -395,20 +398,31 @@ function analyzeChat(data) {
 // ---------------------------------------------------------
 function renderDashboard(data) {
     const { participants, stats } = data;
-    const p1 = participants[0], p2 = participants[1];
+    let p1 = participants[0], p2 = participants[1];
     const container = document.getElementById('dashboard-content');
     container.innerHTML = '';
 
-    // 0. Color Legend for the whole dashboard
+    // Privacy Masking Logic
+    const dName = (name, placeholder) => isPrivacyMode ? placeholder : name;
+    const displayName1 = dName(p1, "使用者 A");
+    const displayName2 = dName(p2, "使用者 B");
+
+    // 0. Privacy Toggle & Color Legend
     container.innerHTML += `
-        <div class="reveal-init" style="display:flex; justify-content:center; gap:32px; margin-bottom:40px; font-weight:700; font-size:1.1rem;">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div style="width:20px; height:20px; border-radius:6px; background:var(--primary); box-shadow:0 0 15px var(--primary-glow);"></div>
-                <span style="color:var(--primary)">${p1}</span>
-            </div>
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div style="width:20px; height:20px; border-radius:6px; background:var(--secondary); box-shadow:0 0 15px var(--secondary-glow);"></div>
-                <span style="color:var(--secondary)">${p2}</span>
+        <div class="reveal-init" style="text-align:center; margin-bottom:40px;">
+            <button class="btn-privacy-toggle ${isPrivacyMode ? 'active' : ''}" onclick="togglePrivacyMode()">
+                ${isPrivacyMode ? '🔓 關閉隱私遮罩' : '🔒 開啟隱私遮罩 (拍照宣傳用)'}
+            </button>
+            
+            <div style="display:flex; justify-content:center; gap:32px; margin-top:20px; font-weight:700; font-size:1.1rem;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="width:20px; height:20px; border-radius:6px; background:var(--primary); box-shadow:0 0 15px var(--primary-glow);"></div>
+                    <span style="color:var(--primary)">${displayName1}</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="width:20px; height:20px; border-radius:6px; background:var(--secondary); box-shadow:0 0 15px var(--secondary-glow);"></div>
+                    <span style="color:var(--secondary)">${displayName2}</span>
+                </div>
             </div>
         </div>
     `;
@@ -577,6 +591,12 @@ function renderDashboard(data) {
                         ${renderTrophyCard('超過1小時才回', `${stats[p1].slowReplies} 次`, `${stats[p2].slowReplies} 次`)}
                     </div>
                 </div>
+                <div class="card-premium" style="grid-column: span 2;">
+                   <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
+                        ${renderLongMsg(displayName1, stats[p1].longestMsg)}
+                        ${renderLongMsg(displayName2, stats[p2].longestMsg)}
+                   </div>
+                </div>
             </div>
         </div>
     `;
@@ -603,8 +623,8 @@ function renderDashboard(data) {
             </div>
             <div class="card-premium" style="margin-bottom:32px;">
                 <div class="player-comparison">
-                    ${renderPlayerBox(p1, stats[p1], 0)}
-                    ${renderPlayerBox(p2, stats[p2], 1)}
+                    ${renderPlayerBox(displayName1, stats[p1], 0)}
+                    ${renderPlayerBox(displayName2, stats[p2], 1)}
                 </div>
             </div>
         </div>
@@ -623,14 +643,21 @@ function renderDashboard(data) {
     `;
 
     initializeRevealObserver();
-    renderTrendChart(p1, p2, stats);
-    renderCallDetailChart(p1, p2, stats);
+    renderTrendChart(displayName1, displayName2, stats, p1, p2);
+    renderCallDetailChart(displayName1, displayName2, stats, p1, p2);
     renderWordCloud(stats);
-    renderRadarChart(p1, p2, stats);
-    renderHourlyChart(p1, p2, stats);
-    renderReplyDistChart(p1, stats[p1], 'replyDistChart1', '#00d2ff');
-    renderReplyDistChart(p2, stats[p2], 'replyDistChart2', '#9d50bb');
+    renderRadarChart(displayName1, displayName2, stats, p1, p2);
+    renderHourlyChart(displayName1, displayName2, stats, p1, p2);
+    renderReplyDistChart(displayName1, stats[p1], 'replyDistChart1', '#00d2ff');
+    renderReplyDistChart(displayName2, stats[p2], 'replyDistChart2', '#9d50bb');
 }
+
+window.togglePrivacyMode = function () {
+    isPrivacyMode = !isPrivacyMode;
+    if (currentAnalysis) {
+        renderDashboard(currentAnalysis);
+    }
+};
 
 function initializeRevealObserver() {
     const observer = new IntersectionObserver((entries) => {
@@ -648,8 +675,11 @@ function showWrappedSummary(p1, p2, stats) {
     const s1 = stats[p1];
     const s2 = stats[p2];
 
+    const displayName1 = isPrivacyMode ? "使用者 A" : p1;
+    const displayName2 = isPrivacyMode ? "使用者 B" : p2;
+
     const totalMsg = s1.messageCount + s2.messageCount;
-    const topP = s1.messageCount > s2.messageCount ? p1 : p2;
+    const topP = s1.messageCount > s2.messageCount ? displayName1 : displayName2;
 
     const renderWrappedBar = (v1, v2, label) => {
         const total = v1 + v2;
@@ -659,7 +689,7 @@ function showWrappedSummary(p1, p2, stats) {
             <div style="margin-top:10px;">
                 <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:4px; opacity:0.8;">
                     <span>${label}</span>
-                    <span>${v1} vs ${v2}</span>
+                    <span class="${isPrivacyMode ? 'mask-text' : ''}">${v1} vs ${v2}</span>
                 </div>
                 <div style="height:6px; background:rgba(255,255,255,0.1); border-radius:3px; display:flex; overflow:hidden;">
                     <div style="width:${p1Pct}%; background:var(--primary)"></div>
@@ -674,11 +704,11 @@ function showWrappedSummary(p1, p2, stats) {
         <div style="display:flex; justify-content:center; gap:24px; margin-bottom:24px; font-size:0.8rem; font-weight:600;">
             <div style="display:flex; align-items:center; gap:8px;">
                 <div style="width:12px; height:12px; border-radius:3px; background:var(--primary)"></div>
-                <span>${p1}</span>
+                <span>${displayName1}</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
                 <div style="width:12px; height:12px; border-radius:3px; background:var(--secondary)"></div>
-                <span>${p2}</span>
+                <span>${displayName2}</span>
             </div>
         </div>
 
@@ -686,12 +716,12 @@ function showWrappedSummary(p1, p2, stats) {
             <div class="wrapped-stat-label">深度連結指數</div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:10px;">
                 <div style="text-align:center; padding:12px; background:rgba(0,210,255,0.1); border-radius:12px; border:1px solid rgba(0,210,255,0.2);">
-                    <div style="font-size:0.7rem; opacity:0.7;">${p1}</div>
+                    <div style="font-size:0.7rem; opacity:0.7;">${displayName1}</div>
                     <div style="font-size:1.2rem; font-weight:800; color:var(--primary)">${s1.lovesickScore}%</div>
                     <div style="font-size:0.75rem; font-weight:600;">${s1.lovesickLevel}</div>
                 </div>
                 <div style="text-align:center; padding:12px; background:rgba(157,80,187,0.1); border-radius:12px; border:1px solid rgba(157,80,187,0.2);">
-                    <div style="font-size:0.7rem; opacity:0.7;">${p2}</div>
+                    <div style="font-size:0.7rem; opacity:0.7;">${displayName2}</div>
                     <div style="font-size:1.2rem; font-weight:800; color:var(--secondary)">${s2.lovesickScore}%</div>
                     <div style="font-size:0.75rem; font-weight:600;">${s2.lovesickLevel}</div>
                 </div>
@@ -707,9 +737,9 @@ function showWrappedSummary(p1, p2, stats) {
         <div class="wrapped-stat-item">
             <div class="wrapped-stat-label">關鍵洞察</div>
             <div style="font-size:0.85rem; line-height:1.6; margin-top:8px;">
-                本階段共產生 <span style="color:var(--primary); font-weight:700;">${totalMsg.toLocaleString()}</span> 則訊息。
+                本階段共產生 <span class="${isPrivacyMode ? 'mask-text' : ''}" style="color:var(--primary); font-weight:700;">${totalMsg.toLocaleString()}</span> 則訊息。
                 由 <span style="color:var(--secondary); font-weight:700;">${topP}</span> 擔任話題發起核心，
-                雙方累積通話達 <span style="color:var(--primary); font-weight:700;">${formatDuration(s1.callDuration + s2.callDuration)}</span>。
+                雙方累積通話達 <span class="${isPrivacyMode ? 'mask-text' : ''}" style="color:var(--primary); font-weight:700;">${formatDuration(s1.callDuration + s2.callDuration)}</span>。
             </div>
         </div>
     `;
@@ -774,14 +804,27 @@ function renderMetricPremium(title, v1, v2, val1, val2) {
     `;
 }
 
+function renderLongMsg(name, msg) {
+    const displayMsg = isPrivacyMode ? "此內容已受隱私模式遮罩保護，無法載入敏感資訊..." : msg.content;
+    return `
+        <div style="background:rgba(255,255,255,0.02); padding:20px; border-radius:16px; border:1px solid var(--glass-border);">
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:12px;">${name} 的最長回覆 (${msg.length} 字)</div>
+            <div class="${isPrivacyMode ? 'mask-text' : ''}" style="font-style:italic; color:var(--text-main); font-size:0.9rem; line-height:1.6; max-height:120px; overflow-y:auto; padding-right:8px;">
+                "${displayMsg}"
+            </div>
+        </div>
+    `;
+}
+
 function renderKeywordRow(label, v1, v2) { return renderMetricPremium(label, '', '', v1, v2); }
 function renderTrophyCard(title, v1, v2) {
+    const mask = (t) => isPrivacyMode ? '<span class="mask-text">匿名紀錄</span>' : t;
     return `
         <div style="background:rgba(255,255,255,0.02); padding:16px; border-radius:12px; border:1px solid var(--glass-border);">
             <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px;">${title}</div>
             <div style="display:flex; justify-content:space-between; font-weight:700;">
-                <span style="color:var(--primary)">${v1}</span>
-                <span style="color:var(--secondary)">${v2}</span>
+                <span style="color:var(--primary)">${title === '專屬口頭禪' ? mask(v1) : v1}</span>
+                <span style="color:var(--secondary)">${title === '專屬口頭禪' ? mask(v2) : v2}</span>
             </div>
         </div>
     `;
@@ -794,7 +837,7 @@ function formatDuration(sec) {
     return `${Math.floor(sec / 3600)}小時 ${Math.floor((sec % 3600) / 60)} 分`;
 }
 
-function renderTrendChart(p1, p2, stats) {
+function renderTrendChart(label1, label2, stats, p1, p2) {
     const ctx = document.getElementById('trendChartFreq').getContext('2d');
     const allDates = Array.from(new Set([...Object.keys(stats[p1].dailyCounts), ...Object.keys(stats[p2].dailyCounts)])).sort();
     new Chart(ctx, {
@@ -802,8 +845,8 @@ function renderTrendChart(p1, p2, stats) {
         data: {
             labels: allDates,
             datasets: [
-                { label: p1, data: allDates.map(d => stats[p1].dailyCounts[d] || 0), borderColor: '#00d2ff', backgroundColor: 'rgba(0, 210, 255, 0.1)', fill: true, tension: 0.4, pointRadius: 2 },
-                { label: p2, data: allDates.map(d => stats[p2].dailyCounts[d] || 0), borderColor: '#9d50bb', backgroundColor: 'rgba(157, 80, 187, 0.1)', fill: true, tension: 0.4, pointRadius: 2 }
+                { label: label1, data: allDates.map(d => stats[p1].dailyCounts[d] || 0), borderColor: '#00d2ff', backgroundColor: 'rgba(0, 210, 255, 0.1)', fill: true, tension: 0.4, pointRadius: 2 },
+                { label: label2, data: allDates.map(d => stats[p2].dailyCounts[d] || 0), borderColor: '#9d50bb', backgroundColor: 'rgba(157, 80, 187, 0.1)', fill: true, tension: 0.4, pointRadius: 2 }
             ]
         },
         options: {
@@ -818,7 +861,7 @@ function renderTrendChart(p1, p2, stats) {
     });
 }
 
-function renderCallDetailChart(p1, p2, stats) {
+function renderCallDetailChart(label1, label2, stats, p1, p2) {
     const ctx = document.getElementById('callChart').getContext('2d');
     const allDates = Array.from(new Set([...Object.keys(stats[p1].dailyCallDuration), ...Object.keys(stats[p2].dailyCallDuration)])).sort();
     const dailyDuration = allDates.map(d => (stats[p1].dailyCallDuration[d] || 0) + (stats[p2].dailyCallDuration[d] || 0));
@@ -839,15 +882,15 @@ function renderCallDetailChart(p1, p2, stats) {
     });
 }
 
-function renderHourlyChart(p1, p2, stats) {
+function renderHourlyChart(label1, label2, stats, p1, p2) {
     const ctx = document.getElementById('hourlyChart').getContext('2d');
     new Chart(ctx, {
         type: 'bar',
         data: {
             labels: Array.from({ length: 24 }, (_, i) => i + "時"),
             datasets: [
-                { label: p1, data: stats[p1].hourlyFreq, backgroundColor: 'rgba(0, 210, 255, 0.5)' },
-                { label: p2, data: stats[p2].hourlyFreq, backgroundColor: 'rgba(157, 80, 187, 0.5)' }
+                { label: label1, data: stats[p1].hourlyFreq, backgroundColor: 'rgba(0, 210, 255, 0.5)' },
+                { label: label2, data: stats[p2].hourlyFreq, backgroundColor: 'rgba(157, 80, 187, 0.5)' }
             ]
         },
         options: {
@@ -858,10 +901,10 @@ function renderHourlyChart(p1, p2, stats) {
     });
 }
 
-function renderRadarChart(p1, p2, stats) {
+function renderRadarChart(label1, label2, stats, p1, p2) {
     const ctx = document.getElementById('radarChart').getContext('2d');
     const getRadarData = (p) => {
-        const s = stats[p], otherP = Object.keys(stats).find(k => k !== p), os = stats[otherP];
+        const s = stats[p], otherP = p === p1 ? p2 : p1, os = stats[otherP];
         const calcEx = (v1, v2) => {
             const total = v1 + v2;
             if (!total) return 50;
@@ -880,8 +923,8 @@ function renderRadarChart(p1, p2, stats) {
         data: {
             labels: ['文字輸出量', '秒回積極度', '通話發起頻率', '深夜活躍', '圖片分享欲'],
             datasets: [
-                { label: p1, data: getRadarData(p1), borderColor: '#00d2ff', backgroundColor: 'rgba(0, 210, 255, 0.2)', borderWidth: 4, pointBackgroundColor: '#00d2ff' },
-                { label: p2, data: getRadarData(p2), borderColor: '#9d50bb', backgroundColor: 'rgba(157, 80, 187, 0.2)', borderWidth: 4, pointBackgroundColor: '#9d50bb' }
+                { label: label1, data: getRadarData(p1), borderColor: '#00d2ff', backgroundColor: 'rgba(0, 210, 255, 0.2)', borderWidth: 4, pointBackgroundColor: '#00d2ff' },
+                { label: label2, data: getRadarData(p2), borderColor: '#9d50bb', backgroundColor: 'rgba(157, 80, 187, 0.2)', borderWidth: 4, pointBackgroundColor: '#9d50bb' }
             ]
         },
         options: {
@@ -903,6 +946,10 @@ function renderRadarChart(p1, p2, stats) {
 
 function renderWordCloud(stats) {
     const container = document.getElementById('wordCloudContainer');
+    if (isPrivacyMode) {
+        container.innerHTML = '<div style="color:var(--text-muted); font-style:italic;">🔒 本機隱私遮罩已開啟，不顯示敏感詞彙</div>';
+        return;
+    }
     const allFreq = {};
     const detailFreq = {};
     const STOP_WORDS = new Set(['什麼', '可以', '一下', '今天', '剛剛', '起來', '沒有', '不是', '出門', '我要', '還沒', '我也', '知道', '還是', '明天', '你要', '感覺', '幹嘛', '現在', '怎麼', '真的', '這個', '要去', '不會', '這樣', '他們', '我剛', '幾點', '好了', '一個', '等等', '我在', '不要', '對啊', '不知', '不知道', '你在', '回家', '跟我', '看到', '很好', '好吃', '你不', '到家', '朋友', '時候', '已經', '還是', '就是', '大家', '自己', '如果', '可能', '還是', '雖然', '所以', '但是', '因為', '東西', '地方', '應該', '而且', '其實', '好像', '結果', '覺得', '哈哈', '哈哈哈', '哈哈哈哈', '笑死']);
