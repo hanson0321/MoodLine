@@ -588,7 +588,7 @@ function renderDashboard(data) {
     // 6. Insights
     container.innerHTML += `
         <div class="section-header">
-            <h2 class="section-title">語意分析與行為觀察</h2>
+            <h2 class="section-title">深度行為觀察</h2>
             <div class="section-line"></div>
         </div>
         <div class="grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap:24px; margin-bottom:32px;">
@@ -811,12 +811,19 @@ function renderTrendChart(p1, p2, stats) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { labels: { color: '#94a3b8', font: { family: 'Outfit' } } } },
+            interaction: { mode: 'index', intersect: false },
             scales: {
-                x: { grid: { display: false }, ticks: { color: '#64748b' } },
+                x: {
+                    grid: { display: false },
+                    ticks: {
+                        color: '#64748b',
+                        autoSkip: true,
+                        maxTicksLimit: 10,
+                        maxRotation: 0
+                    }
+                },
                 y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' }, beginAtZero: true }
             },
-            interaction: { mode: 'index', intersect: false },
             plugins: {
                 legend: { labels: { color: '#94a3b8', font: { family: 'Outfit' } } },
                 zoom: {
@@ -880,7 +887,16 @@ function renderCallDetailChart(p1, p2, stats) {
                 }
             },
             scales: {
-                x: { ticks: { display: false }, grid: { display: false } },
+                x: {
+                    ticks: {
+                        display: true,
+                        color: '#64748b',
+                        maxRotation: 0,
+                        autoSkip: true,
+                        maxTicksLimit: 10
+                    },
+                    grid: { display: false }
+                },
                 y: {
                     grid: { color: 'rgba(255,255,255,0.05)' },
                     ticks: {
