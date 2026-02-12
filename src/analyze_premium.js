@@ -481,10 +481,11 @@ function renderDashboard(data) {
         </div>
         <div class="metrics-row" style="margin-bottom:32px;">
             ${renderMetricPremium('訊息條數', stats[p1].messageCount, stats[p2].messageCount, stats[p1].messageCount, stats[p2].messageCount)}
-            ${renderMetricPremium('秒回率', `${stats[p1].quickResponseRate}%`, `${stats[p2].quickResponseRate}%`, stats[p1].quickResponseRate, stats[p2].quickResponseRate)}
             ${renderMetricPremium('總文字量', stats[p1].wordCount, stats[p2].wordCount, stats[p1].wordCount, stats[p2].wordCount)}
             ${renderMetricPremium('訊息貼圖', stats[p1].stickerCount, stats[p2].stickerCount, stats[p1].stickerCount, stats[p2].stickerCount)}
-            ${renderMetricPremium('平均回覆', `${Math.round(stats[p1].avgReplyTime)}分`, `${Math.round(stats[p2].avgReplyTime)}分`, stats[p1].avgReplyTime, stats[p2].avgReplyTime, true)}
+            ${renderMetricPremium('媒體訊息', stats[p1].mediaCount, stats[p2].mediaCount, stats[p1].mediaCount, stats[p2].mediaCount)}
+            ${renderMetricPremium('秒回率', `${stats[p1].quickResponseRate}%`, `${stats[p2].quickResponseRate}%`, stats[p1].quickResponseRate, stats[p2].quickResponseRate)}
+            ${renderMetricPremium('平均回覆時間', `${Math.round(stats[p1].avgReplyTime)}分`, `${Math.round(stats[p2].avgReplyTime)}分`, stats[p1].avgReplyTime, stats[p2].avgReplyTime, true)}
         </div>
     `;
 
