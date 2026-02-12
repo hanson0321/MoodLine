@@ -279,10 +279,10 @@ function analyzeChat(data) {
 
         if (msg.type === 'text' && !msg.content.includes('已收回訊息')) {
             stats[p].wordCount += msg.content.length;
-            if (/下次|要不要|那個|早安|晚安/.test(msg.content)) stats[p].keywords.ambiguous++;
+            if (/下次|要不要|那個|早安|晚安|想你|愛你|想見|陪我|在幹嘛|到家|去哪|特別|秘密|只有你|想聽|見面|一起/.test(msg.content)) stats[p].keywords.ambiguous++;
             if (/嘛|呢|吧|喔|恩|ww|XD/.test(msg.content)) stats[p].modalParticles++;
-            if (/沒事|抱抱|惜惜|乖|加油|辛苦/.test(msg.content)) stats[p].keywords.emotionaly_pos++;
-            if (/好累|煩|哭|難過|討厭|怎麼辦/.test(msg.content)) stats[p].keywords.emotionaly_neg++;
+            if (/沒事|抱抱|惜惜|乖|加油|辛苦|厲害|很棒|沒關係|有我在|放心|貼心|喜歡你|謝謝你|辛苦了|摸摸|重視|在乎|支持/.test(msg.content)) stats[p].keywords.emotionaly_pos++;
+            if (/好累|煩|哭|難過|討厭|怎麼辦|壓力|想死|救命|傻眼|無語|生氣|委屈|不想|悶|不開心|心煩|絕望/.test(msg.content)) stats[p].keywords.emotionaly_neg++;
             if (/(早安|早啊|早上好)/.test(msg.content)) stats[p].greetings.morning++;
             if (/(晚安|睡囉|先睡)/.test(msg.content)) stats[p].greetings.night++;
             if (/(哈哈|笑死|XD|ww)/i.test(msg.content)) stats[p].laughter++;
