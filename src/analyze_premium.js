@@ -11,11 +11,12 @@ if (fileInput) {
 }
 
 // Global Counter Logic (using a public API)
-const COUNTER_NAMESPACE = "moodline.zeabur.app";
-const COUNTER_KEY = "analyses_total";
+const COUNTER_NAMESPACE = "moodline_yuheng_v1";
+const COUNTER_KEY = "global_analyses";
 
 document.addEventListener('DOMContentLoaded', () => {
-    fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}`)
+    // Add cache buster to prevent getting old data on refresh
+    fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}?t=${Date.now()}`)
         .then(res => res.json())
         .then(data => {
             const count = (data.count || 0) + 51;
@@ -27,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function incrementCounter() {
-    fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/up`)
+    fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/up?t=${Date.now()}`)
         .then(res => res.json())
         .then(data => {
             const count = (data.count || 0) + 51;
