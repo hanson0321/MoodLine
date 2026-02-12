@@ -18,11 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}`)
         .then(res => res.json())
         .then(data => {
-            const count = data.count || 0;
+            const count = (data.count || 0) + 51;
             document.getElementById('totalAnalyses').textContent = count.toLocaleString();
         })
         .catch(() => {
-            document.getElementById('totalAnalyses').textContent = "0";
+            document.getElementById('totalAnalyses').textContent = "51";
         });
 });
 
@@ -30,7 +30,7 @@ function incrementCounter() {
     fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/up`)
         .then(res => res.json())
         .then(data => {
-            const count = data.count || 0;
+            const count = (data.count || 0) + 51;
             document.getElementById('totalAnalyses').textContent = count.toLocaleString();
         })
         .catch(err => console.error("Counter error:", err));
