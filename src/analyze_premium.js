@@ -484,13 +484,14 @@ function renderDashboard(data) {
             ${renderMetricPremium('秒回率', `${stats[p1].quickResponseRate}%`, `${stats[p2].quickResponseRate}%`, stats[p1].quickResponseRate, stats[p2].quickResponseRate)}
             ${renderMetricPremium('總文字量', stats[p1].wordCount, stats[p2].wordCount, stats[p1].wordCount, stats[p2].wordCount)}
             ${renderMetricPremium('訊息貼圖', stats[p1].stickerCount, stats[p2].stickerCount, stats[p1].stickerCount, stats[p2].stickerCount)}
+            ${renderMetricPremium('平均回覆', `${Math.round(stats[p1].avgReplyTime)}分`, `${Math.round(stats[p2].avgReplyTime)}分`, stats[p1].avgReplyTime, stats[p2].avgReplyTime, true)}
         </div>
     `;
 
     // 2.5 Response Time Distribution
     container.innerHTML += `
         <div class="section-header">
-            <h2 class="section-title">回覆速度分佈 <span style="font-size:0.6em; opacity:0.7; font-weight:400; margin-left:8px;">(已扣除睡眠時間 01:00-08:00)</span></h2>
+            <h2 class="section-title">回覆速度分佈 <span style="font-size:0.6em; opacity:0.7; font-weight:400; margin-left:8px;">(已扣除睡眠時間)</span></h2>
             <div class="section-line"></div>
         </div>
         <div class="grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:24px; margin-bottom:32px;">
@@ -666,9 +667,8 @@ function renderDashboard(data) {
     renderWordCloud(stats);
     renderRadarChart(p1, p2, stats);
     renderHourlyChart(p1, p2, stats);
-    // Using higher contrast colors: Neon Cyan vs Neon Pink
-    renderReplyDistChart(p1, stats[p1], 'replyDistChart1', '#00f2fe');
-    renderReplyDistChart(p2, stats[p2], 'replyDistChart2', '#ff00ff');
+    renderReplyDistChart(p1, stats[p1], 'replyDistChart1', '#00d2ff');
+    renderReplyDistChart(p2, stats[p2], 'replyDistChart2', '#9d50bb');
 }
 
 function renderPlayerBox(name, s) {
@@ -1040,10 +1040,10 @@ function renderReplyDistChart(name, s, elementId, baseColor) {
                 data: data,
                 backgroundColor: [
                     baseColor,
-                    baseColor + 'b3', // 70% opacity
-                    baseColor + '66', // 40% opacity
-                    baseColor + '33', // 20% opacity
-                    'rgba(255, 255, 255, 0.05)' // Slow
+                    'rgba(255, 255, 255, 0.4)',
+                    'rgba(255, 255, 255, 0.25)',
+                    'rgba(255, 255, 255, 0.12)',
+                    'rgba(255, 255, 255, 0.05)'
                 ],
                 borderColor: 'rgba(255, 255, 255, 0.1)',
                 borderWidth: 1
