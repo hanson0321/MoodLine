@@ -279,10 +279,10 @@ function analyzeChat(data) {
 
         if (msg.type === 'text' && !msg.content.includes('已收回訊息')) {
             stats[p].wordCount += msg.content.length;
-            if (/下次|要不要|那個|早安|晚安|想你|愛你|想見|陪我|在幹嘛|到家|去哪|特別|秘密|只有你|想聽|見面|一起/.test(msg.content)) stats[p].keywords.ambiguous++;
+            if (/下次|要不要|那個|早安|晚安|想你|愛你|想見|陪我|在幹嘛|到家|去哪|特別|秘密|只有你|想聽|見面|一起|喜歡|可愛|漂亮|帥|親親|牽手|擁抱|害羞|臉紅|夢到|想看你|想陪你|等我|送你|帶你去|專屬|唯一|最重要的|心動|浪漫|約會|出門|散步|看電影|吃飯|喝酒|微醺|撒嬌|壞壞|故意|調皮|聲音|電話|視訊|睡不著|不想掛|捨不得|明天見/.test(msg.content)) stats[p].keywords.ambiguous++;
             if (/嘛|呢|吧|喔|恩|ww|XD/.test(msg.content)) stats[p].modalParticles++;
-            if (/沒事|抱抱|惜惜|乖|加油|辛苦|厲害|很棒|沒關係|有我在|放心|貼心|喜歡你|謝謝你|辛苦了|摸摸|重視|在乎|支持/.test(msg.content)) stats[p].keywords.emotionaly_pos++;
-            if (/好累|煩|哭|難過|討厭|怎麼辦|壓力|想死|救命|傻眼|無語|生氣|委屈|不想|悶|不開心|心煩|絕望/.test(msg.content)) stats[p].keywords.emotionaly_neg++;
+            if (/沒事|抱抱|惜惜|乖|加油|辛苦|厲害|很棒|沒關係|有我在|放心|貼心|喜歡你|謝謝你|辛苦了|摸摸|重視|在乎|支持|懂你|理解|認同|尊重|信任|驕傲|平安|健康|溫暖|快樂|開心|驚喜|禮物|用心|感動|值得|相信你|依靠|肩膀|家人|陪伴|守護|包容|耐心|細心|勇敢|自信|正向|希望|美好|幸運|緣分|珍惜|感謝有你|真好|穩定|默契|別哭|微笑|陽光/.test(msg.content)) stats[p].keywords.emotionaly_pos++;
+            if (/好累|煩|哭|難過|討厭|怎麼辦|壓力|想死|救命|傻眼|無語|生氣|委屈|不想|悶|不開心|心煩|絕望|爛|差|慘|倒楣|痛苦|難受|焦慮|崩潰|負擔|負能量|懶得|好宅|沒動力|孤單|寂寞|空虛|無聊|想哭|沒人理|被無視|放鴿子|遲到|太久|失望|難猜|誤會|爭吵|冷戰|分開|累死|加班|上課|報告|考試|沒錢|窮|病|痛|感冒|睡不好|負面|沒用|廢/.test(msg.content)) stats[p].keywords.emotionaly_neg++;
             if (/(早安|早啊|早上好)/.test(msg.content)) stats[p].greetings.morning++;
             if (/(晚安|睡囉|先睡)/.test(msg.content)) stats[p].greetings.night++;
             if (/(哈哈|笑死|XD|ww)/i.test(msg.content)) stats[p].laughter++;
