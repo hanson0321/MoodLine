@@ -187,7 +187,7 @@ function analyzeChat(data) {
             hourlyFreq: new Array(24).fill(0),
             quickResponses: 0,
             uniqueKeywords: [],
-            replyDist: { instant: 0, fast: 0, normal: 0, slow: 0 },
+            replyDist: { m5: 0, m30: 0, h1: 0, h6: 0, slow: 0 },
             personality: { label: "", desc: "" }
         };
     });
@@ -316,10 +316,11 @@ function analyzeChat(data) {
 
             if (lastSender !== p) {
                 stats[p].replyCount++;
-                const diffMins = diff / 1000 / 60;
-                if (diffMins < 5) stats[p].replyDist.instant++;
-                else if (diffMins < 60) stats[p].replyDist.fast++;
-                else if (diffMins < 720) stats[p].replyDist.normal++;
+                const diffMins = effectiveDiffMins; // Use effective time for fairness
+                if (diffMins <= 5) stats[p].replyDist.m5++;
+                else if (diffMins <= 30) stats[p].replyDist.m30++;
+                else if (diffMins <= 60) stats[p].replyDist.h1++;
+                else if (diffMins <= 360) stats[p].replyDist.h6++;
                 else stats[p].replyDist.slow++;
 
                 if (diff < 5 * 60 * 1000) stats[p].quickResponses++;
@@ -1028,8 +1029,8 @@ window.updateFreqIndicator = function (word, total, personDataStr) {
 
 function renderReplyDistChart(name, s, elementId, baseColor) {
     const ctx = document.getElementById(elementId).getContext('2d');
-    const labels = ['5分內 (秒回)', '1小時內 (積極)', '12小時內 (晚點回)', '半天以上 (慢回)'];
-    const data = [s.replyDist.instant, s.replyDist.fast, s.replyDist.normal, s.replyDist.slow];
+    const labels = ['5分內', '30分內', '1小時內', '6小時內', '6小時以上'];
+    const data = [s.replyDist.m5, s.replyDist.m30, s.replyDist.h1, s.replyDist.h6, s.replyDist.slow];
 
     new Chart(ctx, {
         type: 'doughnut',
