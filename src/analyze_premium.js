@@ -10,6 +10,31 @@ if (fileInput) {
     fileInput.addEventListener('change', handleFileUpload);
 }
 
+// Global Counter Logic (using a public API)
+const COUNTER_NAMESPACE = "moodline_production";
+const COUNTER_KEY = "analyses_v2"; // Changed key to reset counter
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetch(`https://api.countapi.xyz/get/${COUNTER_NAMESPACE}/${COUNTER_KEY}`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('totalAnalyses').textContent = (data.value || 0).toLocaleString();
+        })
+        .catch(() => {
+            // If the key doesn't exist yet, show 0
+            document.getElementById('totalAnalyses').textContent = "0";
+        });
+});
+
+function incrementCounter() {
+    fetch(`https://api.countapi.xyz/hit/${COUNTER_NAMESPACE}/${COUNTER_KEY}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.value) document.getElementById('totalAnalyses').textContent = data.value.toLocaleString();
+        })
+        .catch(err => console.error("Counter error:", err));
+}
+
 function handleFileUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -31,6 +56,7 @@ function handleFileUpload(event) {
                 throw new Error("無法分析數據：請確認檔案中有至少兩位參與者的對話。");
             }
             renderDashboard(analysis);
+            incrementCounter(); // Increment on success
 
             loadingDiv.classList.add('hidden');
             dashboardDiv.classList.remove('hidden');
@@ -159,6 +185,7 @@ function analyzeChat(data) {
             hourlyFreq: new Array(24).fill(0),
             quickResponses: 0,
             uniqueKeywords: [],
+            replyDist: { instant: 0, fast: 0, normal: 0, slow: 0 },
             personality: { label: "", desc: "" }
         };
     });
@@ -287,6 +314,12 @@ function analyzeChat(data) {
 
             if (lastSender !== p) {
                 stats[p].replyCount++;
+                const diffMins = diff / 1000 / 60;
+                if (diffMins < 5) stats[p].replyDist.instant++;
+                else if (diffMins < 60) stats[p].replyDist.fast++;
+                else if (diffMins < 720) stats[p].replyDist.normal++;
+                else stats[p].replyDist.slow++;
+
                 if (diff < 5 * 60 * 1000) stats[p].quickResponses++;
                 if (diff < GAP_THRESHOLD) {
                     stats[p].replyTimes.push(diff);
@@ -452,6 +485,29 @@ function renderDashboard(data) {
         </div>
     `;
 
+    // 2.5 Response Time Distribution
+    container.innerHTML += `
+        <div class="section-header">
+            <h2 class="section-title">回覆速度分佈</h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:24px; margin-bottom:32px;">
+            <div class="card-premium">
+                <h3 style="margin-bottom:20px; color:var(--primary)">${p1} 的回覆節奏</h3>
+                <div style="height:250px;">
+                    <canvas id="replyDistChart1"></canvas>
+                </div>
+            </div>
+            <div class="card-premium">
+                <h3 style="margin-bottom:20px; color:var(--secondary)">${p2} 的回覆節奏</h3>
+                <div style="height:250px;">
+                    <canvas id="replyDistChart2"></canvas>
+                </div>
+            </div>
+        </div>
+    `;
+
+
     // 2. Trend & Hourly
     container.innerHTML += `
         <div class="section-header">
@@ -608,6 +664,8 @@ function renderDashboard(data) {
     renderWordCloud(stats);
     renderRadarChart(p1, p2, stats);
     renderHourlyChart(p1, p2, stats);
+    renderReplyDistChart(p1, stats[p1], 'replyDistChart1', '#00d2ff');
+    renderReplyDistChart(p2, stats[p2], 'replyDistChart2', '#9d50bb');
 }
 
 function renderPlayerBox(name, s) {
@@ -965,3 +1023,43 @@ window.updateFreqIndicator = function (word, total, personDataStr) {
         }, 5000);
     }
 };
+
+function renderReplyDistChart(name, s, elementId, baseColor) {
+    const ctx = document.getElementById(elementId).getContext('2d');
+    const labels = ['5分內 (秒回)', '1小時內 (積極)', '12小時內 (晚點回)', '半天以上 (慢回)'];
+    const data = [s.replyDist.instant, s.replyDist.fast, s.replyDist.normal, s.replyDist.slow];
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    baseColor,
+                    'rgba(255, 255, 255, 0.4)',
+                    'rgba(255, 255, 255, 0.2)',
+                    'rgba(255, 255, 255, 0.05)'
+                ],
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        color: '#94a3b8',
+                        font: { size: 11, family: 'Outfit' },
+                        padding: 15,
+                        usePointStyle: true
+                    }
+                }
+            }
+        }
+    });
+}
