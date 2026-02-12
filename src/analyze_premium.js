@@ -600,7 +600,7 @@ function renderDashboard(data) {
         <div id="wrappedModal" onclick="closeWrapped()">
             <div class="wrapped-card" onclick="event.stopPropagation()">
                 <div class="wrapped-decoration"></div>
-                <div class="wrapped-header">Wrapped 2026</div>
+                <div class="wrapped-header">MoodLine Summary</div>
                 <div id="wrappedContent"></div>
                 <div class="wrapped-footer">此關係分析僅供參考，請珍惜身邊的人</div>
                 <button style="margin-top:20px; padding:10px 20px; border-radius:30px; border:1px solid rgba(255,255,255,0.2); background:transparent; color:#fff; cursor:pointer;" onclick="closeWrapped()">關閉</button>
@@ -630,31 +630,59 @@ function initializeRevealObserver() {
 function showWrappedSummary(p1, p2, stats) {
     const modal = document.getElementById('wrappedModal');
     const content = document.getElementById('wrappedContent');
-    const totalMsg = Object.values(stats).reduce((a, v) => a + v.messageCount, 0);
-    const topP = stats[p1].messageCount > stats[p2].messageCount ? p1 : p2;
+
+    const s1 = stats[p1];
+    const s2 = stats[p2];
+
+    const totalMsg = s1.messageCount + s2.messageCount;
+    const topP = s1.messageCount > s2.messageCount ? p1 : p2;
+
+    const renderWrappedBar = (v1, v2, label) => {
+        const total = v1 + v2;
+        const p1Pct = total ? Math.round((v1 / total) * 100) : 50;
+        const p2Pct = 100 - p1Pct;
+        return `
+            <div style="margin-top:10px;">
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:4px; opacity:0.8;">
+                    <span>${label}</span>
+                    <span>${v1} vs ${v2}</span>
+                </div>
+                <div style="height:6px; background:rgba(255,255,255,0.1); border-radius:3px; display:flex; overflow:hidden;">
+                    <div style="width:${p1Pct}%; background:var(--primary)"></div>
+                    <div style="width:${p2Pct}%; background:var(--secondary)"></div>
+                </div>
+            </div>
+        `;
+    };
+
     content.innerHTML = `
         <div class="wrapped-stat-item">
-            <div class="wrapped-stat-label">此階段總訊息量</div>
-            <div class="wrapped-stat-value">${totalMsg.toLocaleString()} 則</div>
-        </div>
-        <div class="wrapped-stat-item">
-            <div class="wrapped-stat-label">話題主導者</div>
-            <div class="wrapped-stat-value" style="color:var(--primary)">${topP}</div>
-        </div>
-        <div class="wrapped-stat-item" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <div>
-                <div class="wrapped-stat-label">${p1}</div>
-                <div class="wrapped-stat-value" style="font-size:1.1rem">${stats[p1].lovesickLevel}</div>
-            </div>
-            <div>
-                <div class="wrapped-stat-label">${p2}</div>
-                <div class="wrapped-stat-value" style="font-size:1.1rem">${stats[p2].lovesickLevel}</div>
+            <div class="wrapped-stat-label">深度連結指數</div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:10px;">
+                <div style="text-align:center; padding:12px; background:rgba(0,210,255,0.1); border-radius:12px; border:1px solid rgba(0,210,255,0.2);">
+                    <div style="font-size:0.7rem; opacity:0.7;">${p1}</div>
+                    <div style="font-size:1.2rem; font-weight:800; color:var(--primary)">${s1.lovesickScore}%</div>
+                    <div style="font-size:0.75rem; font-weight:600;">${s1.lovesickLevel}</div>
+                </div>
+                <div style="text-align:center; padding:12px; background:rgba(157,80,187,0.1); border-radius:12px; border:1px solid rgba(157,80,187,0.2);">
+                    <div style="font-size:0.7rem; opacity:0.7;">${p2}</div>
+                    <div style="font-size:1.2rem; font-weight:800; color:var(--secondary)">${s2.lovesickScore}%</div>
+                    <div style="font-size:0.75rem; font-weight:600;">${s2.lovesickLevel}</div>
+                </div>
             </div>
         </div>
+
         <div class="wrapped-stat-item">
-            <div class="wrapped-stat-label">關係深度</div>
-            <div style="height:100px; margin-top:10px; background:rgba(255,255,255,0.05); border-radius:16px; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.8rem;">
-                你們共進行了 ${Object.values(stats).reduce((a, v) => a + v.callCount, 0)} 次通話
+            ${renderWrappedBar(s1.wordCount, s2.wordCount, '總文字量對比')}
+            ${renderWrappedBar(s1.mediaCount + s1.stickerCount, s2.mediaCount + s2.stickerCount, '多媒體分享(含貼圖)對比')}
+        </div>
+
+        <div class="wrapped-stat-item">
+            <div class="wrapped-stat-label">關鍵洞察</div>
+            <div style="font-size:0.85rem; line-height:1.6; margin-top:8px;">
+                本階段共產生 <span style="color:var(--primary); font-weight:700;">${totalMsg.toLocaleString()}</span> 則訊息。
+                由 <span style="color:var(--secondary); font-weight:700;">${topP}</span> 擔任話題發起核心，
+                雙方累積通話達 <span style="color:var(--primary); font-weight:700;">${formatDuration(s1.callDuration + s2.callDuration)}</span>。
             </div>
         </div>
     `;
@@ -825,13 +853,22 @@ function renderRadarChart(p1, p2, stats) {
         data: {
             labels: ['文字輸出量', '秒回積極度', '通話發起頻率', '深夜活躍', '圖片分享欲'],
             datasets: [
-                { label: p1, data: getRadarData(p1), borderColor: '#00d2ff', backgroundColor: 'rgba(0, 210, 255, 0.2)' },
-                { label: p2, data: getRadarData(p2), borderColor: '#9d50bb', backgroundColor: 'rgba(157, 80, 187, 0.2)' }
+                { label: p1, data: getRadarData(p1), borderColor: '#00d2ff', backgroundColor: 'rgba(0, 210, 255, 0.2)', borderWidth: 4, pointBackgroundColor: '#00d2ff' },
+                { label: p2, data: getRadarData(p2), borderColor: '#9d50bb', backgroundColor: 'rgba(157, 80, 187, 0.2)', borderWidth: 4, pointBackgroundColor: '#9d50bb' }
             ]
         },
         options: {
             responsive: true, maintainAspectRatio: false,
-            scales: { r: { suggestedMin: 0, suggestedMax: 100, ticks: { display: false }, pointLabels: { color: '#94a3b8' } } },
+            scales: {
+                r: {
+                    suggestedMin: 0,
+                    suggestedMax: 100,
+                    ticks: { display: false },
+                    grid: { color: 'rgba(255,255,255,0.2)' },
+                    angleLines: { color: 'rgba(255,255,255,0.2)' },
+                    pointLabels: { color: '#94a3b8', font: { size: 12 } }
+                }
+            },
             plugins: { legend: { display: false } }
         }
     });
