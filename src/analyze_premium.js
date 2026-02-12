@@ -619,19 +619,9 @@ function renderDashboard(data) {
             <h2 class="section-title">對等性雷達洞察</h2>
             <div class="section-line"></div>
         </div>
-        <div class="card-premium" style="margin-bottom:32px; display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:24px; align-items:center;">
-            <div style="height:350px;">
+        <div class="card-premium" style="margin-bottom:32px; display:flex; justify-content:center; align-items:center;">
+            <div style="height:400px; width:100%; max-width:600px;">
                 <canvas id="radarChart"></canvas>
-            </div>
-            <div style="display:flex; flex-direction:column; gap:20px;">
-                <div class="personality-card" style="background:rgba(0, 210, 255, 0.05); padding:20px; border-radius:16px; border:1px solid rgba(0, 210, 255, 0.1);">
-                    <div style="color:var(--primary); font-weight:800; font-size:1.1rem; margin-bottom:8px;">${p1} 的性格標籤：${stats[p1].personality.label}</div>
-                    <p style="font-size:0.875rem; color:var(--text-secondary); line-height:1.6;">${stats[p1].personality.desc}</p>
-                </div>
-                <div class="personality-card" style="background:rgba(157, 80, 187, 0.05); padding:20px; border-radius:16px; border:1px solid rgba(157, 80, 187, 0.1);">
-                    <div style="color:var(--secondary); font-weight:800; font-size:1.1rem; margin-bottom:8px;">${p2} 的性格標籤：${stats[p2].personality.label}</div>
-                    <p style="font-size:0.875rem; color:var(--text-secondary); line-height:1.6;">${stats[p2].personality.desc}</p>
-                </div>
             </div>
         </div>
     `;
