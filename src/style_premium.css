@@ -201,6 +201,41 @@ body {
     line-height: 1.6;
 }
 
+.usage-stats {
+    margin-top: 32px;
+}
+
+.usage-counter {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px 24px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+}
+
+.usage-counter-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+}
+
+.usage-counter-number {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 0 8px;
+    text-shadow: 0 0 15px var(--primary-glow);
+}
+
+.usage-privacy {
+    margin-top: 12px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    opacity: 0.8;
+}
+
 /* --- File Upload (Hero Action) --- */
 .upload-card {
     margin: 60px auto;
@@ -671,6 +706,7 @@ body {
     font-weight: 900;
     background: linear-gradient(to right, var(--primary), var(--secondary));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 30px;
 }
